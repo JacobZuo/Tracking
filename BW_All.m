@@ -49,7 +49,7 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
         CellRegion = regionprops(BW_Image);
         CellRegion_array = (reshape(struct2array(CellRegion), [7, size(CellRegion, 1)]))';
         % remove the cells less then 5 pixels and larger than 360 pixels
-        CellRegion_array(CellRegion_array(:, 1) < 5 | CellRegion_array(:, 1) > 360) = [];
+        CellRegion_array(CellRegion_array(:, 1) < 5 | CellRegion_array(:, 1) > 360,:) = [];
         CellRegion_All{i} = CellRegion_array;
         CellNumDetected(i) = size(CellRegion_array, 1);
         [~, Barlength] = DisplayBar(i, size(TrackImageIndex, 2), Barlength);
