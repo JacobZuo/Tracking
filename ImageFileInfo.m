@@ -1,36 +1,50 @@
-function [Info] = ImageFileInfo(FileName)
-    %  TODO for tif image stack add
-    [Path,Name,Type] = fileparts(FileName);
-    Info.File_id = FileName;
-    Info.Path = [Path,'\'];
-    Info.FileName = Name;
-    Info.FileType = Type;
+function [ImageInfo] = ImageFileInfo(FileName,ChannelNum,varargin)
 
-    if strcmp(Info.FileType, '.nd2')
+    if isempty(varargin)
+    else
+        TrackChannel=varargin;
+    end
 
-        r = bfGetReader(Info.File_id, 0);
-        Info.main = r.getGlobalMetadata();
-        Info.numImages = r.getImageCount();
-        Info.ImageWidth = r.getSizeX();
-        Info.ImageHeight = r.getSizeY();
+
+    [Path, Name, Type] = fileparts(FileName);
+    ImageInfo.File_id = FileName;
+    ImageInfo.Path = [Path, '\'];
+    ImageInfo.FileName = Name;
+    ImageInfo.FileType = Type;
+
+    if strcmp(ImageInfo.FileType, '.nd2')
+
+        r = bfGetReader(ImageInfo.File_id, 0);
+        ImageInfo.main = r.getGlobalMetadata();
+        ImageInfo.numImages = r.getImageCount();
+        ImageInfo.ImageWidth = r.getSizeX();
+        ImageInfo.ImageHeight = r.getSizeY();
         r.close();
         clear r
 
-    elseif strcmp(Info.FileType, '.tif')
+    elseif strcmp(ImageInfo.FileType, '.tif')
 
-        Info.main = imfinfo(Info.File_id);
-        Info.numImages = size(Info.main, 1);
-        Info.ImageWidth = Info.main(1).Width;
-        Info.ImageHeight = Info.main(1).Height;
+        ImageInfo.main = imfImageInfo(ImageInfo.File_id);
+        ImageInfo.numImages = size(ImageInfo.main, 1);
+        ImageInfo.ImageWidth = ImageInfo.main(1).Width;
+        ImageInfo.ImageHeight = ImageInfo.main(1).Height;
 
     else
         disp(['Do not support ', FileType, ' file'])
         return
     end
 
-    if Info.numImages < 20
+    if ImageInfo.numImages < 20
         disp('Warning, too short movie for tracking cell motion.')
     else
+    end
+
+    % Split the Tracking stacks
+
+    if exist('TrackChannel', 'var')
+        ImageInfo = StackSplitter(ImageInfo, ChannelNum, TrackChannel);
+    else
+        ImageInfo = StackSplitter(ImageInfo, ChannelNum);
     end
 
 end

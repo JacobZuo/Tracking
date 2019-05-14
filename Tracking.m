@@ -1,29 +1,28 @@
 function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     %
-    % Tracking(Path,FileName)
+    % [Trace_All, ImageInfo] = Tracking(FileName)
+    % [Trace_All, ImageInfo] = Tracking(FileName, 'Parameter', value)
     %
-    % Tracking(Path,FileName) tracking the fluorescent cells in image (.nd2) of file name of 'FileName' in path 'Path'. The tracking result is saved in '.mat' file with the same name of 'FileName' in 'Path'.
+    % Tracking(FileName) tracking the fluorescent cells in movie (.nd2 or .tif) of file name 
+    % of 'FileName'. 
     %
-    % The tracking is based on a B/W image. The fluorescent image (gray) is transformed into B/W image after normalization with some adjustable parameters. The image is 'blur' with a 'gauss filter' in radias as 'BlurSize'. The threshold is adjusted with parameters of the histogram of the background (peak value and peak width). Increasing the parameter 'ExtensionRatio' will icrease the threshold.
+    % The funtion will return a cell data Trace_All and a structure data ImageInfo. Each cell
+    % in Trace_All will be one trajectories in the movie. The rest tracking result will be 
+    % saved in '.mat' file in the same path.
     %
-    % Multichannel images is acceptable. Change 'ChannelNum' will splite the images into several channels one and another. The darkest channel will be taken as the fluorescent channel for tracking.
+    % Multichannel images is acceptable. 
+    % [Trace_All, ImageInfo] = Tracking(FileName, 'ChannelNum', 2)
+    % will automatically split the stack into 2 channels. The darkest channel will be taken as
+    % the fluorescent channel for tracking.
     %
-    % One can use either one or more parameters in the same command. For example, Tracking(Path,FileName,'ChannelNum',2) will split the images into 2 channels. The default parameters is set as below.
-    %
-    %                 ChannelNum=1;
-    %                 ImagePlay='on';
-    %                 AutoThreshold,'on'
-    %
-    % AutoThreshold controls the auto threshold detection. Set 'AutoThreshold' 'off' and then user can past the threshold parameters with BlurSize and ExtensionRatio. The default setting is shown below.
-    %
-    %                 BlurSize=1.5;
-    %                 ExtensionRatio=2;
-    %                 ActiveContourTimes = 3;
-
+    % [Trace_All, ImageInfo] = Tracking(FileName, 'AutoThreshold', 'off', 'BlurSize', 1.5, ...
+    %   'ExtensionRatio', 2, 'ActiveContourTimes', 5)
+    % will set the thereshold manually. You can find the specific introduction for each parameter in
+    % README.md.
+    % 
 
     % TODO Test the .tif support.
-    % TODO TrackPlayer Play the trojactories in a movie (tif stack)
-    % TODO SpecialCaseDetector and use activecontour to resolve the problem.
+    % TODO SpecialCaseDetector.
 
     % Initialization the default parameter
     disp('----------------------------------------------------------------------------------------------------')
@@ -37,25 +36,25 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
 
     if isempty(varargin)
     else
+
         for i = 1:(size(varargin, 2) / 2)
+
             if ischar(varargin{i * 2})
                 eval([varargin{i * 2 - 1}, ' = ''', varargin{i * 2}, '''; ']);
             else
                 eval([varargin{i * 2 - 1}, '=', num2str(varargin{i * 2}), ';']);
             end
+
         end
+
     end
 
-    % Check the frame number of the images
-
-    ImageInfo = ImageFileInfo(FileName);
-
-    % Split the Tracking stacks
+    % Check the Information of the movie
 
     if exist('TrackChannel', 'var')
-        ImageInfo = StackSplitter(ImageInfo, ChannelNum, TrackChannel);
+        ImageInfo = ImageFileInfo(FileName,ChannelNum,TrackChannel);
     else
-        ImageInfo = StackSplitter(ImageInfo, ChannelNum);
+        ImageInfo = ImageFileInfo(FileName,ChannelNum);
     end
 
     % Background Normalization
@@ -74,7 +73,7 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     if strcmp(AutoThreshold, 'on')
         [BlurSize, ExtensionRatio, ActiveContourTimes] = ThresholdTest(ImageInfo, Background_nor);
     else
-        
+
         if exist('BlurSize', 'var')
         else
             BlurSize = 1.5;
