@@ -1,4 +1,23 @@
-function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, BlurSize, ExtensionRatio, ActiveContourTimes)
+function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, BlurSize, ExtensionRatio, varargin)
+
+    ActiveContourStatus = 'off';
+    AutoCellSize = 'on';
+    ActiveContourTimes = 5;
+
+    if isempty(varargin)
+    else
+
+        for i = 1:(size(varargin, 2) / 2)
+
+            if ischar(varargin{i * 2})
+                eval([varargin{i * 2 - 1}, ' = ''', varargin{i * 2}, '''; ']);
+            else
+                eval([varargin{i * 2 - 1}, '=', num2str(varargin{i * 2}), ';']);
+            end
+
+        end
+
+    end
 
     File_id = ImageInfo.File_id;
     TrackImageIndex = ImageInfo.TrackImageIndex;
@@ -44,19 +63,18 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
         end
 
         Normalize_Image = uint16(double(Original_Image(:, :)) ./ Background_nor);
-        BW_Image = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, 'ActiveContourTimes', ActiveContourTimes);
+        BW_Image = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, 'AutoCellSize', AutoCellSize, 'ActiveContourStatus', ActiveContourStatus, 'ActiveContourTimes', ActiveContourTimes);
         imwrite(BW_Image, BWtifStackNameFull, 'WriteMode', 'append', 'Compression', 'none');
         CellRegion = regionprops(BW_Image);
         CellRegion_array = (reshape(struct2array(CellRegion), [7, size(CellRegion, 1)]))';
         % remove the cells less then 5 pixels and larger than 360 pixels
-        CellRegion_array(CellRegion_array(:, 1) < 5 | CellRegion_array(:, 1) > 360,:) = [];
+        CellRegion_array(CellRegion_array(:, 1) < 5 | CellRegion_array(:, 1) > 360, :) = [];
         CellRegion_All{i} = CellRegion_array;
         CellNumDetected(i) = size(CellRegion_array, 1);
         [~, Barlength] = DisplayBar(i, size(TrackImageIndex, 2), Barlength);
     end
 
     if strcmp(ImageInfo.FileType, '.nd2')
-
         r.close();
         clear r
     else

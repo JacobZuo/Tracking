@@ -77,25 +77,31 @@ The program would automatically detect the threshold for the movie to transfer t
 
 ```matlab
 [Trace_All, ImageInfo] = Tracking(FileName, 'AutoThreshold', 'off', 'BlurSize', 1.5，...
-     'ExtensionRatio', 2, 'ActiveContourTimes', 5)
+     'ExtensionRatio', 2)
 ```
-Firstly, the image will be blurred with Gaussian filter to remove the obvious noise on the background. Then the threshold is set as ```mean intensity of the background``` ```+``` ```standard deviation of the background noise``` ```*``` ```ratio```. At last the B/W image are revised with ```activecontour```. ```BlurSize``` will set the radius for gauss blurring. ```ExtensionRatio``` set the ratio in the threshold. ```ActiveContourTimes``` set the repetition times for ```activecontour```.
+Firstly, the image will be blurred with Gaussian filter to remove the obvious noise on the background. Then the threshold is set as ```mean intensity of the background``` ```+``` ```standard deviation of the background noise``` ```*``` ```ratio```. At last the B/W image are revised with ```activecontour```. ```BlurSize``` will set the radius for gauss blurring. ```ExtensionRatio``` set the ratio in the threshold.
 
-The default setting for these values is shown below.
+When set ```'AutoThreshold'``` ```'off'``` without specify the parameter value. The default values will be applied as below.
 ```matlab
-BlurSize = 1.5; ExtensionRatio = 2; ActiveContourTimes = 3;
+BlurSize = 1.5; ExtensionRatio = 2;
 ```
 
 ### 2.3 Advanced usage
 
 #### 2.3.1 Particle/cell size control
 
-To control the quality of the binary image, the default particle/cell size (area in binary image) is set as 120 pixels in function ```TheresholdTest```.
+To control the quality of the binary image, the default particle/cell size (area in binary image) is set as 120 pixels in function ```CellSizeControl```.
 
 ```matlab
 CellSize_default = 120;
 ```
-The mean cell size would be smaller than ```CellSize_default``` after ```activecontour```. You can change the default cell size to acquire a better auto threshold result.
+The mean cell size would be around ```CellSize_default``` after appling ```CellSizeControl```. You can change the default cell size if to acquire a better auto threshold result. 
+
+If you would like to turn off auto cell size adjustment. You can use the following command.
+
+```matlab
+[Trace_All, ImageInfo] = Tracking(FileName, 'AutoCellSzie', 'off')
+```
 
 #### 2.3.2 Noise level
 
@@ -106,21 +112,31 @@ NoiseNum(BlurSize_index, ExtensionRatio_index) = sum(CellSize < 5);
 ```
 When adjustiing threshold, we try to balance the cell number detected and noise level, i.e., detect as more cells as we can with lowest noise ```NoiseNum < 3```. Both the size of the noise pixels and the allowable number of noise areas can be adjusted in ```TheresholdTest```.
 
+The residual noise pixels will be abandoned in cell size control.
+
 #### 2.3.3 Particle/cell density
 
-For better tracking result, the detected particle/cell density should be around 100 to 200 per frame. If there are too few cells, a missing cell may cause wrong connections between frames. If there are too many cells, the collision between cells may also cause wrong connections.
+For better tracking result, the detected particle/cell density should be around 100 to 200 per frame. If there are too few cells, a missing or a new comming cell may cause wrong connections between frames. If there are too many cells, the collision between cells may also cause wrong connections.
 
 There will be a warning if there are too few or too many cells detected in some of the frames. Try to check and adjust the threshold to obtain a better tracking result.
 
 #### 2.3.4 Efficiency
 
-Reading the image into Matlab and ```activecontour``` is the most slowly process in the full function.
+Reading the image into Matlab is the most slowly process in the full function. The images are loaded and processed one by one in Matlab, as for some of the cases, it is hard to load all the data (in tens of GB, out of RAM) into Matlab at once. If you RAM is large enough, you can change the image loading part in ```BW_All``` could obtain better efficiency. Using a ```parfor``` to load and process the image will be faster.
 
-The images are loaded and processed one by one in Matlab, as for some of the cases, it is hard to load all the data (in tens of GB, out of RAM) into Matlab at once. Change the image loading part in ```BW_All``` could obtain better efficiency.
+Now the program use ```imerode``` and ```imdilate``` to adjust cell size to achieve better efficiency. You can also use ```activecontour``` to acquire better B/W image. 
 
-Use ```activecontour``` to acquire better B/W image is slowly when doing ```activecontour``` for ```>10``` times. Adjust the threshold parameters manually could get better efficiency.
+```matlab
+[Trace_All, ImageInfo] = Tracking(FileName, 'ActiveContourStatus', 'on', 'ActiveContourTimes', 10)
+```
 
-In future version, we would use ```imerode``` and ```activecontour``` together to increase the efficiency in the threshold process.
+Function ```activecontour``` can work independent of ```CellSizeControl```.
+
+```matlab
+[Trace_All, ImageInfo] = Tracking(FileName, 'AutoCellSize', 'off', 'ActiveContourStatus', 'on', ...
+     'ActiveContourTimes', 10)
+```
+
 
 ## 3. Appended functions
 

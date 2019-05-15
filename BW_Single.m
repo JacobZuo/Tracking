@@ -1,8 +1,8 @@
 function [BW_Image] = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, varargin)
 
-    ActiveContourStatus = 'on';
-    ActiveContourTimes = 3;
-    % Reload the parameters input by user
+    ActiveContourStatus = 'off';
+    AutoCellSize = 'on';
+    ActiveContourTimes = 5;
 
     if isempty(varargin)
     else
@@ -17,11 +17,6 @@ function [BW_Image] = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, varar
 
         end
 
-    end
-
-    if ActiveContourTimes == 0
-        ActiveContourStatus = 'off';
-    else
     end
 
     if BlurSize == 0
@@ -45,6 +40,11 @@ function [BW_Image] = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, varar
     end
 
     BW_Image = (Iblur > fitresult.b1 + ExtensionRatio * fitresult.c1);
+
+    if strcmp(AutoCellSize, 'on')
+        [BW_Image, ~] = CellSizeControl(BW_Image);
+    else
+    end
 
     if strcmp(ActiveContourStatus, 'on')
         BW_Image = activecontour(Normalize_Image, BW_Image, ActiveContourTimes, 'edge');

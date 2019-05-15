@@ -3,23 +3,23 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     % [Trace_All, ImageInfo] = Tracking(FileName)
     % [Trace_All, ImageInfo] = Tracking(FileName, 'Parameter', value)
     %
-    % Tracking(FileName) tracking the fluorescent cells in movie (.nd2 or .tif) of file name 
-    % of 'FileName'. 
+    % Tracking(FileName) tracking the fluorescent cells in movie (.nd2 or .tif) of file name
+    % of 'FileName'.
     %
     % The funtion will return a cell data Trace_All and a structure data ImageInfo. Each cell
-    % in Trace_All will be one trajectories in the movie. The rest tracking result will be 
+    % in Trace_All will be one trajectories in the movie. The rest tracking result will be
     % saved in '.mat' file in the same path.
     %
-    % Multichannel images is acceptable. 
+    % Multichannel images is acceptable.
     % [Trace_All, ImageInfo] = Tracking(FileName, 'ChannelNum', 2)
     % will automatically split the stack into 2 channels. The darkest channel will be taken as
     % the fluorescent channel for tracking.
     %
     % [Trace_All, ImageInfo] = Tracking(FileName, 'AutoThreshold', 'off', 'BlurSize', 1.5, ...
-    %   'ExtensionRatio', 2, 'ActiveContourTimes', 5)
+        %   'ExtensionRatio', 2, 'ActiveContourTimes', 5)
     % will set the thereshold manually. You can find the specific introduction for each parameter in
     % README.md.
-    % 
+    %
 
     % TODO Test the .tif support.
     % TODO SpecialCaseDetector.
@@ -29,9 +29,11 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     disp('Initialization...')
 
     ChannelNum = 1;
-    AutoThreshold = 'on';
     Normalization = 'on';
-
+    AutoThreshold = 'on';
+    AutoCellSize = 'on';
+    ActiveContourStatus = 'off';
+    ActiveContourTimes = 5;
     % Reload the parameters input by user
 
     if isempty(varargin)
@@ -52,9 +54,9 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     % Check the Information of the movie
 
     if exist('TrackChannel', 'var')
-        ImageInfo = ImageFileInfo(FileName,ChannelNum,TrackChannel);
+        ImageInfo = ImageFileInfo(FileName, ChannelNum, TrackChannel);
     else
-        ImageInfo = ImageFileInfo(FileName,ChannelNum);
+        ImageInfo = ImageFileInfo(FileName, ChannelNum);
     end
 
     % Background Normalization
@@ -70,8 +72,11 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     end
 
     % Test for the best threshold.
+
     if strcmp(AutoThreshold, 'on')
-        [BlurSize, ExtensionRatio, ActiveContourTimes] = ThresholdTest(ImageInfo, Background_nor);
+        disp('----------------------------------------------------------------------------------------------------')
+        disp('Auto threshold tesing')
+        [BlurSize, ExtensionRatio] = ThresholdTest(ImageInfo, Background_nor);
     else
 
         if exist('BlurSize', 'var')
@@ -84,17 +89,20 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
             ExtensionRatio = 2;
         end
 
-        if exist('ActiveContourTimes', 'var')
-        else
-            ActiveContourTimes = 3;
-        end
-
     end
+
+    disp(['The BlurSize and ExtensionRatio is set as ', num2str(BlurSize), ' and ', num2str(ExtensionRatio)])
+
+    % Process Cell Size.
+    disp('----------------------------------------------------------------------------------------------------')
+    disp('Process Cell Size')
+    MeanCellSize = CellSizeTest(ImageInfo, Background_nor, BlurSize, ExtensionRatio, 'AutoCellSize', AutoCellSize, 'ActiveContourStatus', ActiveContourStatus, 'ActiveContourTimes', ActiveContourTimes);
+    disp(['The mean cell size is about ', num2str(MeanCellSize)])
 
     % Transform the gray images into B/W image
     disp('----------------------------------------------------------------------------------------------------')
     disp('B/W Image Calculating...')
-    [CellRegion_All, ~] = BW_All(ImageInfo, Background_nor, BlurSize, ExtensionRatio, ActiveContourTimes);
+    [CellRegion_All, ~] = BW_All(ImageInfo, Background_nor, BlurSize, ExtensionRatio, 'CellSizeControlStatus', AutoCellSize, 'ActiveContourStatus', 'on', 'ActiveContourTimes', ActiveContourTimes);
 
     % PartOne find the locations of cells
     disp('----------------------------------------------------------------------------------------------------')
