@@ -1,5 +1,7 @@
 # Paticle/Cell tracking (Matlab)
 
+![PyPI - License](https://img.shields.io/pypi/l/Django.svg)
+
 ## 1. Overview
 
 This repo contains the source codes for tracking particles motion with Matlab. For now, we can only do tracking with fluorescent OR dark filed movies (i.e., the objects should be brighter than the background).
