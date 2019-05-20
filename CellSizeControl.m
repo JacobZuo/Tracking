@@ -26,8 +26,8 @@ function [BW_Image_Result, MeanCellSize] = CellSizeControl(BW_Image, varargin)
 
     CellRegion = regionprops(BW_Image);
     CellRegion_mat = (reshape(struct2array(CellRegion), [7, size(CellRegion, 1)]))';
-
-    BW_Image_Rest = bwpropfilt(BW_Image, 'Area', [CellSize_default * 1.4, max(CellRegion_mat(:, 1))]);
+    
+%     BW_Image_Rest = bwpropfilt(BW_Image, 'Area', [CellSize_default * 1.4, max(CellRegion_mat(:, 1))]);
     se_decrease = strel('disk', 1);
 
     while max(CellRegion_mat(:, 1)) > CellSize_default * 1.4
