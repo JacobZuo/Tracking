@@ -24,11 +24,12 @@ function [BW_Image_Result, MeanCellSize] = CellSizeControl(BW_Image, varargin)
 
     BW_Image_Result = BW_Image_Result + bwpropfilt(BW_Image, 'Area', [CellSize_default * 0.8, CellSize_default * 1.4]);
 
-    CellRegion = regionprops(BW_Image);
+    
+    BW_Image_Rest = BW_Image;
+    se_decrease = strel('disk', 1);
+    CellRegion = regionprops(BW_Image_Rest);
     CellRegion_mat = (reshape(struct2array(CellRegion), [7, size(CellRegion, 1)]))';
     
-%     BW_Image_Rest = bwpropfilt(BW_Image, 'Area', [CellSize_default * 1.4, max(CellRegion_mat(:, 1))]);
-    se_decrease = strel('disk', 1);
 
     while max(CellRegion_mat(:, 1)) > CellSize_default * 1.4
         BW_Image_Rest = bwpropfilt(BW_Image_Rest, 'Area', [CellSize_default * 1.4, max(CellRegion_mat(:, 1))]);
@@ -37,7 +38,7 @@ function [BW_Image_Result, MeanCellSize] = CellSizeControl(BW_Image, varargin)
         CellRegion_mat = (reshape(struct2array(CellRegion), [7, size(CellRegion, 1)]))';
         BW_Image_Result = BW_Image_Result + bwpropfilt(BW_Image_Rest, 'Area', [0, CellSize_default * 1.4]);
     end
-
+    
     BW_Image_Result = BW_Image_Result > 0.5;
 
     se_decrease = strel('disk', 1);
