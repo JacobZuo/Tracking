@@ -19,9 +19,30 @@ for i= 1:size_center
                 trace_result{i}{k}=[i,centerx(in),centery(in),cell_size1(in);i+1,centerx2(NearestCellIndex),centery2(NearestCellIndex),cell_size2(NearestCellIndex)];
             end
         else
-            % disp('Warning!')
+%             disp('Warning!')
         end
     end
+    % find repeat connections    
+    trace_repeat_test=cell2mat(trace_result{i}(:));
+    CellSpeed=((trace_repeat_test(2:2:end,2)-trace_repeat_test(1:2:end,2)).^2+(trace_repeat_test(2:2:end,3)-trace_repeat_test(1:2:end,3)).^2).^0.5;
+    
+    trace_repeat_testx=trace_repeat_test(2:2:end,2);
+    trace_repeat_testy=trace_repeat_test(2:2:end,3);
+    [Sort_trace_repeat_testx,SortIndex]=sort(trace_repeat_testx);
+    Sort_trace_repeat_testy=trace_repeat_testy(SortIndex);
+    RepeatIndex=find(diff(Sort_trace_repeat_testx)==0 & diff(Sort_trace_repeat_testy)==0);
+    
+    while ~isempty(RepeatIndex)
+        DelIndex=(RepeatIndex+double((CellSpeed(SortIndex(RepeatIndex))-CellSpeed(SortIndex(RepeatIndex+1)))<0));
+        trace_result{i}(SortIndex(DelIndex))=[];
+        trace_repeat_test=cell2mat(trace_result{i}(:));
+        trace_repeat_testx=trace_repeat_test(2:2:end,2);
+        trace_repeat_testy=trace_repeat_test(2:2:end,3);
+        [Sort_trace_repeat_testx,SortIndex]=sort(trace_repeat_testx);
+        Sort_trace_repeat_testy=trace_repeat_testy(SortIndex);
+        RepeatIndex=find(diff(Sort_trace_repeat_testx)==0 & diff(Sort_trace_repeat_testy)==0);
+    end
+
     [~,Barlength] = DisplayBar(i,size_center,Barlength);
 end
 end
