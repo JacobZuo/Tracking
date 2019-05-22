@@ -23,10 +23,7 @@ function [MeanCellSize] = CellSizeTest(ImageInfo, Background_nor, BlurSize, Exte
     TrackChannel = ImageInfo.TrackChannel;
 
     if strcmp(ImageInfo.FileType, '.nd2')
-        r = bfGetReader(File_id, 0);
-        Original_Image = bfGetPlane(r, TrackChannel);
-        r.close();
-        clear r
+        Original_Image = ND2ReadSingle(ImageInfo.File_id, TrackChannel);
     elseif strcmp(ImageInfo.FileType, '.tif')
         Original_Image = imread(File_id, 'Index', TrackChannel, 'Info', ImageInfo.main);
     end

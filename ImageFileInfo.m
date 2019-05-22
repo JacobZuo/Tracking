@@ -14,13 +14,7 @@ function [ImageInfo] = ImageFileInfo(FileName,ChannelNum,varargin)
 
     if strcmp(ImageInfo.FileType, '.nd2')
 
-        r = bfGetReader(ImageInfo.File_id, 0);
-        ImageInfo.main = r.getGlobalMetadata();
-        ImageInfo.numImages = r.getImageCount();
-        ImageInfo.ImageWidth = r.getSizeX();
-        ImageInfo.ImageHeight = r.getSizeY();
-        r.close();
-        clear r
+        [ImageInfo] = ND2Info(ImageInfo);
 
     elseif strcmp(ImageInfo.FileType, '.tif')
 

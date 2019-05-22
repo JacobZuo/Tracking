@@ -23,19 +23,14 @@ elseif ChannelNum==1
     ImageInfo.TrackImageIndex=1:ImageInfo.numImages;
 else
     for i=1:ChannelNum
-        
         if strcmp(ImageInfo.FileType,'.nd2')
-            r = bfGetReader(ImageInfo.File_id, 0);
-            Original_Image=bfGetPlane(r, i);
-            r.close();
-            clear r
+            Original_Image=ND2ReadSingle(ImageInfo.FileName, i);
         elseif strcmp(ImageInfo.FileType,'.tif')
             Original_Image=imread(File_id,'Index',i,'Info',ImageInfo.main);
         else
             disp('Error!')
             return
         end
-        
         ImageIntensity(i)=sum(Original_Image(:));
     end
     ImageInfo.TrackChannel=find(min(ImageIntensity));

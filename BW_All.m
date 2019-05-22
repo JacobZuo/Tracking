@@ -39,7 +39,7 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
     end
 
     if strcmp(ImageInfo.FileType, '.nd2')
-        r = bfGetReader(File_id, 0);
+        [FilePointer,ImagePointer,ImageReadOut] = ND2Open(File_id);
     elseif strcmp(ImageInfo.FileType, '.tif')
     else
         disp('Error!')
@@ -54,7 +54,9 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
     for i = 1:size(TrackImageIndex, 2)
 
         if strcmp(ImageInfo.FileType, '.nd2')
-            Original_Image = bfGetPlane(r, TrackImageIndex(i));
+            [~,~,ImageReadOut] = calllib('Nd2ReadSdk','Lim_FileGetImageData',FilePointer,uint32(TrackImageIndex(i)-1),ImagePointer);
+            Image=reshape(ImageReadOut.pImageData,[ImageInfo.ImageWidth,ImageInfo.ImageHeight]);
+            Original_Image=Image';
         elseif strcmp(ImageInfo.FileType, '.tif')
             Original_Image = imread(File_id, 'Index', TrackImageIndex(i), 'Info', ImageInfo.main);
         else
@@ -75,8 +77,8 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
     end
 
     if strcmp(ImageInfo.FileType, '.nd2')
-        r.close();
-        clear r
+        calllib('Nd2ReadSdk','Lim_FileClose',FilePointer);
+
     else
     end
 

@@ -7,16 +7,10 @@ function [Background_nor] = BackgroundNormalization(ImageInfo)
     ReSizeRatio = 3;
 
     if strcmp(ImageInfo.FileType, '.nd2')
-        r = bfGetReader(File_id, 0);
-
-        for i = 1:(floor(size(TrackImageIndex, 2) / 20) + 1):size(TrackImageIndex, 2)
-            Original_Image = bfGetPlane(r, TrackImageIndex(i));
-            Background(:, :, end + 1) = Original_Image;
-        end
-
-        r.close();
-        clear r
-
+        
+        Num=1:(floor(size(TrackImageIndex, 2) / 20) + 1):size(TrackImageIndex, 2);
+        Background=ND2Read(File_id,Num);
+        
     elseif strcmp(ImageInfo.FileType, '.tif')
 
         for i = 1:(floor(size(TrackImageIndex, 2) / 20) + 1):size(TrackImageIndex, 2)
