@@ -1,6 +1,6 @@
 # Paticle/Cell tracking (Matlab)
 
-![PyPI - License](https://img.shields.io/pypi/l/Django.svg)
+![BSD- License](https://img.shields.io/pypi/l/Django.svg)
 
 ## 1. Overview
 
