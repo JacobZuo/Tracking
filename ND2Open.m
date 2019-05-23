@@ -5,9 +5,17 @@ FileID = libpointer('voidPtr',[int8(FileName) 0]);
 CoordSize = calllib('Nd2ReadSdk','Lim_FileGetCoordSize',FilePointer);
 numImages = calllib('Nd2ReadSdk','Lim_FileGetSeqCount',FilePointer);
 Attibutes = calllib('Nd2ReadSdk','Lim_FileGetAttributes',FilePointer);
-setdatatype(Attibutes,'uint8Ptr',213)
-AttibutesJson=strcat(string(char(Attibutes.Value')));
+setdatatype(Attibutes,'uint8Ptr',500)
+AttibutesValue=Attibutes.Value';
+Attibuteslength=find(AttibutesValue==0,1);
+AttibutesJson=char(AttibutesValue(1:Attibuteslength-1));
 AttibutesStru=mps.json.decode(AttibutesJson);
+
+% Metadata = calllib('Nd2ReadSdk','Lim_FileGetMetadata',FilePointer);
+% setdatatype(Metadata,'uint8Ptr',5000)
+% MetadataValue=Metadata.Value';
+% Metadatalength=find(MetadataValue==0,1);
+% MetadataJson=char(MetadataValue(1:Metadatalength-1));
 
 ImageStru.uiBitsPerComp=AttibutesStru.bitsPerComponentInMemory;
 ImageStru.uiComponents=AttibutesStru.componentCount;
@@ -19,6 +27,6 @@ ImagePointer = libpointer('s_LIMPICTUREPtr', ImageStru);
 calllib('Nd2ReadSdk','Lim_InitPicture',ImagePointer,ImageStru.uiWidth,ImageStru.uiHeight,ImageStru.uiBitsPerComp,ImageStru.uiComponents);
 
 [~,~,ImageReadOut] = calllib('Nd2ReadSdk','Lim_FileGetImageData',FilePointer,uint32(0),ImagePointer);
-setdatatype(ImageReadOut.pImageData,'uint16Ptr',ImageStru.uiWidth*ImageStru.uiHeight)
+setdatatype(ImageReadOut.pImageData,'uint16Ptr',ImageStru.uiWidth*ImageStru.uiHeight*ImageStru.uiComponents)
 
 end

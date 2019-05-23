@@ -1,36 +1,29 @@
-function [ImageStack] = ND2Read(FileName,Num)
+function [ImageStack] = ND2Read(FilePointer,ImagePointer,ImageReadOut,Num)
 
-FileID = libpointer('voidPtr',[int8(FileName) 0]);
-[FilePointer] = calllib('Nd2ReadSdk','Lim_FileOpenForReadUtf8',FileID);
-% CoordSize = calllib('Nd2ReadSdk','Lim_FileGetCoordSize',FilePointer);
-numImages = calllib('Nd2ReadSdk','Lim_FileGetSeqCount',FilePointer);
-Attibutes = calllib('Nd2ReadSdk','Lim_FileGetAttributes',FilePointer);
-setdatatype(Attibutes,'uint8Ptr',213)
-AttibutesJson=strcat(string(char(Attibutes.Value')));
-AttibutesStru=mps.json.decode(AttibutesJson);
 
-ImageStru.uiBitsPerComp=AttibutesStru.bitsPerComponentInMemory;
-ImageStru.uiComponents=AttibutesStru.componentCount;
-ImageStru.uiWidthBytes=AttibutesStru.widthBytes;
-ImageStru.uiHeight=AttibutesStru.heightPx;
-ImageStru.uiWidth=AttibutesStru.widthPx;
-ImagePointer = libpointer('s_LIMPICTUREPtr', ImageStru);
+if ImageReadOut.uiComponents==1
+    
+    ImageStack=zeros([ImageReadOut.uiHeight,ImageReadOut.uiWidth,size(Num,2)]);
+    
+    for i=1:size(Num,2)
+        [~,~,ImageReadOut] = calllib('Nd2ReadSdk','Lim_FileGetImageData',FilePointer,uint32(Num(i)-1),ImagePointer);
+        Image=reshape(ImageReadOut.pImageData,[ImageReadOut.uiWidth,ImageReadOut.uiHeight]);
+        ImageStack(:,:,i)=Image';
+    end
+    
+else
+    ImageStack=cell([1,ImageReadOut.uiComponents]);
 
-calllib('Nd2ReadSdk','Lim_InitPicture',ImagePointer,ImageStru.uiWidth,ImageStru.uiHeight,ImageStru.uiBitsPerComp,ImageStru.uiComponents);
+    for i=1:size(Num,2)
+        [~,~,ImageReadOut] = calllib('Nd2ReadSdk','Lim_FileGetImageData',FilePointer,uint32(Num(i)-1),ImagePointer);
+        Image=reshape(ImageReadOut.pImageData,[ImageReadOut.uiComponents,ImageReadOut.uiWidth*ImageReadOut.uiHeight]);
+        for j=1:ImageReadOut.uiComponents
+        ImageStack{j}(:,:,i)=reshape(Image(j,:),[ImageReadOut.uiWidth,ImageReadOut.uiHeight])';
+        end
+    end
 
-ImageReadOut=ImageStru;
-ImageReadOut.uiSize=calllib('Nd2ReadSdk','Lim_InitPicture',ImagePointer,ImageStru.uiWidth,ImageStru.uiHeight,ImageStru.uiBitsPerComp,ImageStru.uiComponents);
-ImageZero=zeros(ImageStru.uiWidth*ImageStru.uiHeight,1);
-[~,~,ImageReadOut] = calllib('Nd2ReadSdk','Lim_FileGetImageData',FilePointer,uint32(0),ImagePointer);
-setdatatype(ImageReadOut.pImageData,'uint16Ptr',ImageStru.uiWidth*ImageStru.uiHeight)
-
-for i=1:size(Num,2)
-    [~,~,ImageReadOut] = calllib('Nd2ReadSdk','Lim_FileGetImageData',FilePointer,uint32(Num(i)-1),ImagePointer);
-    Image=reshape(ImageReadOut.pImageData,[ImageStru.uiWidth,ImageStru.uiHeight]);
-    ImageStack(:,:,i)=Image';
-end
-calllib('Nd2ReadSdk','Lim_FileClose',FilePointer);
-
+    end
+    
 end
 
 

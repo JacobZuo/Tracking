@@ -16,7 +16,7 @@ for i = 1:size(CellRegion_All,2)
     [V{i}, C{i}]=voronoin(center{i});
     
     C{i}(end-3:end)=[];
-    center{i}(end-3:end)=[];
+    center{i}(end-3:end,:)=[];
 
     [~,Barlength] = DisplayBar(i,size(CellRegion_All,2),Barlength);
 end

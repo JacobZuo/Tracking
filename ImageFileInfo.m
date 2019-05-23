@@ -14,8 +14,11 @@ function [ImageInfo] = ImageFileInfo(FileName,ChannelNum,varargin)
 
     if strcmp(ImageInfo.FileType, '.nd2')
 
-        [ImageInfo] = ND2Info(ImageInfo);
-
+        ImageInfo.main = ND2Info(ImageInfo.File_id);
+        ImageInfo.numImages = ImageInfo.main.numImages;
+        ImageInfo.ImageWidth = ImageInfo.main.ImageWidth;
+        ImageInfo.ImageHeight =ImageInfo.main.ImageHeight;
+        
     elseif strcmp(ImageInfo.FileType, '.tif')
 
         ImageInfo.main = imfImageInfo(ImageInfo.File_id);

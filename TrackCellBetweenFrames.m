@@ -22,7 +22,7 @@ for i= 1:size_center
 %             disp('Warning!')
         end
     end
-    % find repeat connections    
+%     find repeat connections    
     trace_repeat_test=cell2mat(trace_result{i}(:));
     CellSpeed=((trace_repeat_test(2:2:end,2)-trace_repeat_test(1:2:end,2)).^2+(trace_repeat_test(2:2:end,3)-trace_repeat_test(1:2:end,3)).^2).^0.5;
     

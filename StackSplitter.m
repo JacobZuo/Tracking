@@ -2,7 +2,7 @@ function [ImageInfo] = StackSplitter(ImageInfo,ChannelNum,varargin)
 
 if isempty(varargin)
 else
-    TrackChannel=varargin;
+    TrackChannel=cell2mat(varargin{1});
 end
 
 ImageIntensity=zeros(1,ChannelNum);
@@ -22,14 +22,19 @@ elseif ChannelNum==1
     ImageInfo.TrackChannel=1;
     ImageInfo.TrackImageIndex=1:ImageInfo.numImages;
 else
-    for i=1:ChannelNum
-        if strcmp(ImageInfo.FileType,'.nd2')
-            Original_Image=ND2ReadSingle(ImageInfo.FileName, i);
-        elseif strcmp(ImageInfo.FileType,'.tif')
-            Original_Image=imread(File_id,'Index',i,'Info',ImageInfo.main);
-        else
-            disp('Error!')
-            return
+    
+    if strcmp(ImageInfo.FileType,'.nd2')
+        
+        [FilePointer,ImagePointer,ImageReadOut] = ND2Open(ImageInfo.File_id);
+        [Original_ImageStack] = ND2Read(FilePointer,ImagePointer,ImageReadOut,1:ChannelNum);
+        ND2Close(FilePointer);
+        ImageIntensity=reshape(sum(sum(Original_ImageStack,1),2),[1,ChannelNum,1]);
+
+    elseif strcmp(ImageInfo.FileType,'.tif')
+        for i=1:ChannelNum
+            
+            Original_Image=imread(ImageInfo.File_id,'Index',i,'Info',ImageInfo.main);
+            
         end
         ImageIntensity(i)=sum(Original_Image(:));
     end
