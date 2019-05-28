@@ -27,10 +27,11 @@ function [Background_nor] = BackgroundNormalization(ImageInfo)
 
     BG_mean = mean(double(Background), 3);
     BG_resize = imresize(BG_mean, 1 / ReSizeRatio, 'nearest');
-    BG_blur = imgaussfilt(BG_resize, 5);
+    AdaptBG = adaptthresh(mat2gray(BG_resize),0.5,'ForegroundPolarity','bright');
+
     [X, Y] = meshgrid(2:ReSizeRatio:ImageInfo.ImageHeight, 2:ReSizeRatio:ImageInfo.ImageWidth);
 
-    [xData, yData, zData] = prepareSurfaceData(X, Y, BG_blur);
+    [xData, yData, zData] = prepareSurfaceData(X, Y, AdaptBG);
 
     % Set up fittype and options.
     ft = fittype('a1.*(exp(-((x-b1).^2+(y-c1).^2)/d1^2))', 'independent', {'x', 'y'}, 'dependent', 'z');

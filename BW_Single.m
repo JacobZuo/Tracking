@@ -8,13 +8,7 @@ function [BW_Image] = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, varar
     else
 
         for i = 1:(size(varargin, 2) / 2)
-
-            if ischar(varargin{i * 2})
-                eval([varargin{i * 2 - 1}, ' = ''', varargin{i * 2}, '''; ']);
-            else
-                eval([varargin{i * 2 - 1}, '=', num2str(varargin{i * 2}), ';']);
-            end
-
+            AssignVar(varargin{i * 2 - 1},varargin{i * 2})
         end
 
     end
