@@ -3,18 +3,13 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
     ActiveContourStatus = 'off';
     AutoCellSize = 'on';
     ActiveContourTimes = 5;
+    Tag=char(datetime('now','format','-HH-mm-ss'));
 
     if isempty(varargin)
     else
 
         for i = 1:(size(varargin, 2) / 2)
-
-            if ischar(varargin{i * 2})
-                eval([varargin{i * 2 - 1}, ' = ''', varargin{i * 2}, '''; ']);
-            else
-                eval([varargin{i * 2 - 1}, '=', num2str(varargin{i * 2}), ';']);
-            end
-
+            AssignVar(varargin{i * 2 - 1},varargin{i * 2})
         end
 
     end
@@ -25,7 +20,7 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
     FileName = ImageInfo.FileName;
     Path = ImageInfo.Path;
 
-    BWtifStackName = [Path, 'BW_', FileName];
+    BWtifStackName = [Path, 'BW_', FileName, Tag];
 
     if exist([BWtifStackName, '.tif'], 'file') == 2
         BWtifStackNameFull = [BWtifStackName, '_', num2str(floor(rand(1) * 10^5)), '.tif'];
