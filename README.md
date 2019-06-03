@@ -144,17 +144,20 @@ Function ```activecontour``` can work independent of ```CellSizeControl```.
 
 ### 3.1 Process bar
 
-There is a processing bar in ```>``` style displayed in Matlab command window when running ```for``` loops during tracking.
+There is a processing bar in ```[##>---]``` style displayed in Matlab command window when running ```for``` loops during tracking.
 
-The function ```DisplayBar``` is used to display the processing bar. The number of ```>``` on the screen indicates the percentage of the progress. You can also use the process bar in all ```for``` loops as below,
+The function ```DisplayBar``` is used to display the processing bar. The number of ```#``` on the screen indicates the percentage of the progress. The process bar is 80 characters in width. You can also use the process bar in all ```for``` loops as below,
 
 ```matlab
-Barlength = 0;
 for Index = 1:Length
     ......
-    [Percentage, Barlength] = DisplayBar(Index, Length, Barlength)
+    [Percentage, Barlength] = DisplayBar(Index, Length);
 end
 ```
+The bar would be shown in the command windows as below.
+
+![](Resource/DisplayBar.gif)
+
 
 ### 3.2 Trace trimmer
 

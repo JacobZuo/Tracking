@@ -21,7 +21,7 @@ function [ImageInfo] = ImageFileInfo(FileName,ChannelNum,varargin)
         
     elseif strcmp(ImageInfo.FileType, '.tif')
 
-        ImageInfo.main = imfImageInfo(ImageInfo.File_id);
+        ImageInfo.main = imfinfo(ImageInfo.File_id);
         ImageInfo.numImages = size(ImageInfo.main, 1);
         ImageInfo.ImageWidth = ImageInfo.main(1).Width;
         ImageInfo.ImageHeight = ImageInfo.main(1).Height;

@@ -5,7 +5,6 @@ function [Trace_all] = TraceConnector(trace_result)
 
     Tracking_id = cell(1, 10000);
     Tracking_id{2} = 1:max(size(Trace_all));
-    Barlength = 0;
     size_trace_result = size(trace_result, 2);
 
     for i = 2:size_trace_result
@@ -42,7 +41,7 @@ function [Trace_all] = TraceConnector(trace_result)
             Tracking_id{i + 1}(end + 1:end + size_trace_resulti(2)) = (max(size(Trace_all)) - size_trace_resulti(2) + 1):max(size(Trace_all));
         end
 
-        [~, Barlength] = DisplayBar(i - 1, size_trace_result - 1, Barlength);
+        DisplayBar(i - 1, size_trace_result - 1);
     end
 
 end

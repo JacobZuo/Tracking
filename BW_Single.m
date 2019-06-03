@@ -30,7 +30,8 @@ function [BW_Image] = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, varar
 
     if gof.adjrsquare > 0.98
     else
-        disp('Warning, fitting background hist with RSquare < 0.98.')
+        assignin('caller', 'Warning', 1)
+%         disp('Warning, fitting background hist with RSquare < 0.98.')
     end
 
     BW_Image = (Iblur > fitresult.b1 + ExtensionRatio * fitresult.c1);

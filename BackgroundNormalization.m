@@ -27,10 +27,9 @@ function [Background_nor] = BackgroundNormalization(ImageInfo)
 
     BG_mean = mean(double(Background), 3);
     BG_resize = imresize(BG_mean, 1 / ReSizeRatio, 'nearest');
-    AdaptBG = adaptthresh(mat2gray(BG_resize),0.5,'ForegroundPolarity','bright');
-
-    [X, Y] = meshgrid(2:ReSizeRatio:ImageInfo.ImageHeight, 2:ReSizeRatio:ImageInfo.ImageWidth);
-
+    AdaptBG = adaptthresh(mat2gray(BG_resize,[0 max(BG_resize(:))]),0.5,'ForegroundPolarity','bright');
+    
+    [X, Y] = meshgrid(2:ReSizeRatio:ReSizeRatio*size(AdaptBG,2),2:ReSizeRatio:ReSizeRatio*size(AdaptBG,1));    
     [xData, yData, zData] = prepareSurfaceData(X, Y, AdaptBG);
 
     % Set up fittype and options.
@@ -49,7 +48,7 @@ function [Background_nor] = BackgroundNormalization(ImageInfo)
         disp(['Warning, fitting normalization background with RSquare of ', num2str(gof.adjrsquare)])
     end
 
-    [X_BG, Y_BG] = meshgrid(1:ImageInfo.ImageHeight, 1:ImageInfo.ImageWidth);
+    [X_BG, Y_BG] = meshgrid(1:ImageInfo.ImageWidth, 1:ImageInfo.ImageHeight);
 
     Background_nor = fitBG(X_BG, Y_BG) ./ (max(max(fitBG(X, Y))));
 

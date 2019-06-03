@@ -2,7 +2,6 @@ function [trace_result] = TrackCellBetweenFrames(center,cell_size,V,C)
 size_center=size(center,2)-1;
 trace_result=cell(0);
 
-Barlength=0;
 for i= 1:size_center
     Ci=C{i}; Vi=V{i}; centerx=center{i}(:,1); centery=center{i}(:,2);cell_size1=cell_size{i};
     centerx2=center{i+1}(:,1); centery2=center{i+1}(:,2);cell_size2=cell_size{i+1};
@@ -43,7 +42,7 @@ for i= 1:size_center
         RepeatIndex=find(diff(Sort_trace_repeat_testx)==0 & diff(Sort_trace_repeat_testy)==0);
     end
 
-    [~,Barlength] = DisplayBar(i,size_center,Barlength);
+    DisplayBar(i,size_center);
 end
 end
 

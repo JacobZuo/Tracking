@@ -10,7 +10,7 @@ function [TraceMovie] = TracePlayer(ImageInfo, Background_nor, Trace)
     DownSide = min(max(floor(Trace(:, 3)) + 100), ImageInfo.ImageHeight);
 
     if strcmp(ImageInfo.FileType, '.nd2')
-        r = bfGetReader(File_id, 0);
+        [FilePointer,ImagePointer,ImageReadOut] = ND2Open(File_id);
     elseif strcmp(ImageInfo.FileType, '.tif')
     else
         disp('Error!')
@@ -23,7 +23,7 @@ function [TraceMovie] = TracePlayer(ImageInfo, Background_nor, Trace)
     for i = 1:size(Trace, 1)
 
         if strcmp(ImageInfo.FileType, '.nd2')
-            Original_Image = bfGetPlane(r, TrackImageIndex(Trace(i, 1)));
+            Original_Image = ND2Read(FilePointer,ImagePointer,ImageReadOut,i);
         elseif strcmp(ImageInfo.FileType, '.tif')
             Original_Image = imread(File_id, 'Index', TrackImageIndex(Trace(i, 1)), 'Info', ImageInfo.main);
         else
@@ -38,6 +38,8 @@ function [TraceMovie] = TracePlayer(ImageInfo, Background_nor, Trace)
         TraceMovie(:, :, i) = TraceImagei;
 
     end
+
+    calllib('Nd2ReadSdk','Lim_FileClose',FilePointer);
 
     implay(TraceMovie)
 

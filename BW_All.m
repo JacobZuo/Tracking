@@ -44,12 +44,10 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
     CellNumDetected = [];
     CellRegion_All = cell(0);
 
-    Barlength = 0;
-
     for i = 1:size(TrackImageIndex, 2)
 
         if strcmp(ImageInfo.FileType, '.nd2')
-            Original_Image = ND2Read(FilePointer,ImagePointer,ImageReadOut,TrackImageIndex(i)-1);
+            Original_Image = ND2Read(FilePointer,ImagePointer,ImageReadOut,TrackImageIndex(i));
         elseif strcmp(ImageInfo.FileType, '.tif')
             Original_Image = imread(File_id, 'Index', TrackImageIndex(i), 'Info', ImageInfo.main);
         else
@@ -66,7 +64,7 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
         CellRegion_array(CellRegion_array(:, 1) < 5 | CellRegion_array(:, 1) > 360, :) = [];
         CellRegion_All{i} = CellRegion_array;
         CellNumDetected(i) = size(CellRegion_array, 1);
-        [~, Barlength] = DisplayBar(i, size(TrackImageIndex, 2), Barlength);
+        DisplayBar(i, size(TrackImageIndex, 2));
     end
 
     if strcmp(ImageInfo.FileType, '.nd2')

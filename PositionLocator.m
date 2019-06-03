@@ -1,7 +1,6 @@
 function [center,cell_size,V,C] = PositionLocator(CellRegion_All,ImageInfo)
 
 center=cell(0); V=cell(0); C=cell(0); cell_size=cell(0);
-Barlength=0;
 
 for i = 1:size(CellRegion_All,2)
     
@@ -18,7 +17,7 @@ for i = 1:size(CellRegion_All,2)
     C{i}(end-3:end)=[];
     center{i}(end-3:end,:)=[];
 
-    [~,Barlength] = DisplayBar(i,size(CellRegion_All,2),Barlength);
+    DisplayBar(i,size(CellRegion_All,2));
 end
 
 end
