@@ -6,8 +6,8 @@ function [FilePointer, ImagePointer, ImageReadOut] = ND2Open(FileName)
 
     FileID = libpointer('voidPtr', [int8(FileName) 0]);
     [FilePointer] = calllib('Nd2ReadSdk', 'Lim_FileOpenForReadUtf8', FileID);
-    CoordSize = calllib('Nd2ReadSdk', 'Lim_FileGetCoordSize', FilePointer);
-    numImages = calllib('Nd2ReadSdk', 'Lim_FileGetSeqCount', FilePointer);
+%     CoordSize = calllib('Nd2ReadSdk', 'Lim_FileGetCoordSize', FilePointer);
+%     numImages = calllib('Nd2ReadSdk', 'Lim_FileGetSeqCount', FilePointer);
     Attibutes = calllib('Nd2ReadSdk', 'Lim_FileGetAttributes', FilePointer);
     setdatatype(Attibutes, 'uint8Ptr', 500)
     AttibutesValue = Attibutes.Value';
