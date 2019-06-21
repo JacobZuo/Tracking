@@ -39,7 +39,10 @@ function [TraceMovie] = TracePlayer(ImageInfo, Background_nor, Trace)
 
     end
 
-    calllib('Nd2ReadSdk','Lim_FileClose',FilePointer);
+    if strcmp(ImageInfo.FileType,'.nd2')
+        calllib('Nd2ReadSdk','Lim_FileClose',FilePointer);
+    else
+    end
 
     implay(TraceMovie)
 
