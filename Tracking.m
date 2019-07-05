@@ -21,9 +21,6 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     % README.md.
     %
 
-    % TODO Test the .tif support.
-    % TODO SpecialCaseDetector.
-
     % Initialization the default parameter
     disp('--------------------------------------------------------------------------------')
     disp('Initialization...')

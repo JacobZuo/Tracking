@@ -31,24 +31,28 @@ function [trace_result] = TrackCellBetweenFrames(center, cell_size, V, C)
         end
 
         %     find repeat connections
+        trace_result{i}(cellfun('length', trace_result{i}) == 0) = [];
+
         trace_repeat_test = cell2mat(trace_result{i}(:));
         CellSpeed = ((trace_repeat_test(2:2:end, 2) - trace_repeat_test(1:2:end, 2)).^2 + (trace_repeat_test(2:2:end, 3) - trace_repeat_test(1:2:end, 3)).^2).^0.5;
 
-        trace_repeat_testx = trace_repeat_test(2:2:end, 2);
-        trace_repeat_testy = trace_repeat_test(2:2:end, 3);
-        [Sort_trace_repeat_testx, SortIndex] = sort(trace_repeat_testx);
-        Sort_trace_repeat_testy = trace_repeat_testy(SortIndex);
-        RepeatIndex = find(diff(Sort_trace_repeat_testx) == 0 & diff(Sort_trace_repeat_testy) == 0);
+        
+        trace_repeat_test_xy = trace_repeat_test(2:2:end, 2:3);
+        [Sort_trace_repeat_test_xy,SortIndex]=sortrows(trace_repeat_test_xy);
+        Sort_trace_repeat_testx=Sort_trace_repeat_test_xy(:,1);
+        Sort_trace_repeat_testy=Sort_trace_repeat_test_xy(:,2);
+        RepeatIndex = find((diff(Sort_trace_repeat_testx) == 0) & (diff(Sort_trace_repeat_testy) == 0));
 
         while ~isempty(RepeatIndex)
             DelIndex = (RepeatIndex + double((CellSpeed(SortIndex(RepeatIndex)) - CellSpeed(SortIndex(RepeatIndex + 1))) < 0));
             trace_result{i}(SortIndex(DelIndex)) = [];
             trace_repeat_test = cell2mat(trace_result{i}(:));
-            trace_repeat_testx = trace_repeat_test(2:2:end, 2);
-            trace_repeat_testy = trace_repeat_test(2:2:end, 3);
-            [Sort_trace_repeat_testx, SortIndex] = sort(trace_repeat_testx);
-            Sort_trace_repeat_testy = trace_repeat_testy(SortIndex);
-            RepeatIndex = find(diff(Sort_trace_repeat_testx) == 0 & diff(Sort_trace_repeat_testy) == 0);
+            CellSpeed = ((trace_repeat_test(2:2:end, 2) - trace_repeat_test(1:2:end, 2)).^2 + (trace_repeat_test(2:2:end, 3) - trace_repeat_test(1:2:end, 3)).^2).^0.5;
+            trace_repeat_test_xy = trace_repeat_test(2:2:end, 2:3);
+            [Sort_trace_repeat_test_xy,SortIndex]=sortrows(trace_repeat_test_xy);
+            Sort_trace_repeat_testx=Sort_trace_repeat_test_xy(:,1);
+            Sort_trace_repeat_testy=Sort_trace_repeat_test_xy(:,2);
+            RepeatIndex = find((diff(Sort_trace_repeat_testx) == 0) & (diff(Sort_trace_repeat_testy) == 0));
         end
 
         DisplayBar(i, size_center);
