@@ -32,6 +32,14 @@ Structure ```ImageInfo``` will record some basic information of the movie file. 
 
 Running the function will also save two data files under the same path of the movie file, a binary ```'.tif'``` stack of the movie and a ```'.mat'``` Matlab data file contains all the intermediate variables.
 
+You can also do tracking with a B/W image with
+
+```matlab
+[Trace_All, ImageInfo] = TrackingBW(BWImage)
+```
+
+```BWImage``` can be a matrix of binary images in Matlab workspace or a filename with full path of the binary images data in ```.mat``` file or an binary ```.tif``` stack.
+
 ### 2.2 Parameter options
 
 #### 2.2.1 Setting parameters
@@ -100,7 +108,7 @@ To control the quality of the binary image, the default particle/cell size (area
 ```matlab
 CellSize_default = 120;
 ```
-The mean cell size would be around ```CellSize_default``` after appling ```CellSizeControl```. You can change the default cell size if to acquire a better auto threshold result. 
+The mean cell size would be around ```CellSize_default``` after appling ```CellSizeControl```. You can change the default cell size to acquire a better auto threshold result. 
 
 If you would like to turn off auto cell size adjustment. You can use the following command.
 
