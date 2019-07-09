@@ -26,6 +26,13 @@ function [FilePointer, ImagePointer, ImageReadOut] = ND2Open(FileName)
     ImageStru.uiWidthBytes = AttibutesStru.widthBytes;
     ImageStru.uiHeight = AttibutesStru.heightPx;
     ImageStru.uiWidth = AttibutesStru.widthPx;
+          
+    if ImageStru.uiWidthBytes==ImageStru.uiWidth*ImageStru.uiComponents*ImageStru.uiBitsPerComp/8
+    else
+        disp('Warning, image width is not fit the bytes of width. Reset image width.')
+        ImageStru.uiWidth=ImageStru.uiWidthBytes/ImageStru.uiComponents/(ImageStru.uiBitsPerComp/8);
+    end
+    
     ImagePointer = libpointer('s_LIMPICTUREPtr', ImageStru);
 
     calllib('Nd2ReadSdk', 'Lim_InitPicture', ImagePointer, ImageStru.uiWidth, ImageStru.uiHeight, ImageStru.uiBitsPerComp, ImageStru.uiComponents);

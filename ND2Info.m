@@ -80,8 +80,19 @@ ImageInfo.description = TextInfoStru.description;
 ImageInfo.numImages = numImages;
 ImageInfo.CoordSize = CoordSize;
 
-ImageInfo.NumInCoord = NumInCoord;
-ImageInfo.ImageWidth = AttributesStru.widthPx;
+% ImageInfo.NumInCoord = NumInCoord;
+
+if AttributesStru.widthBytes==AttributesStru.widthPx*AttributesStru.componentCount*AttributesStru.bitsPerComponentInMemory/8
+    ImageInfo.ImageWidth = AttributesStru.widthPx;
+    ImageInfo.ImageWidthOriginal = AttributesStru.widthPx;
+else
+    disp('Warning, image width is not fit the bytes of width. Reset image width.')
+    ImageInfo.ImageWidth=AttributesStru.widthBytes/AttributesStru.componentCount/(AttributesStru.bitsPerComponentInMemory/8);
+    ImageInfo.ImageWidthOriginal = AttributesStru.widthPx;
+end
+
+
+
 ImageInfo.ImageHeight = AttributesStru.heightPx;
 ImageInfo.Component = AttributesStru.componentCount;
 
@@ -89,6 +100,6 @@ ImageInfo.Component = AttributesStru.componentCount;
 [ImageInfo] = CheckInfo(ImageInfo);
 PrintInfo(ImageInfo);
 
-calllib('Nd2ReadSdk', 'Lim_FileClose', FilePointer);
+ND2Close(FilePointer)
 
 end
