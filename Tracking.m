@@ -98,14 +98,14 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     % PartOne find the locations of cells
     disp('--------------------------------------------------------------------------------')
     disp('Finding cells locations ...')
-    [Cell_Centroid, Cell_Size, V, C] = PositionLocator(CellRegion_All, ImageInfo);
+    [Cell_Centroid, Cell_Size, Cell_Index, V, C] = PositionLocator(CellRegion_All, ImageInfo);
 
     disp('Finished!')
 
     % PartTwo link the cells between neighbour frames
     disp('--------------------------------------------------------------------------------')
     disp('Tracking cells between neighbour frames')
-    [trace_result] = TrackCellBetweenFrames(Cell_Centroid, Cell_Size, V, C);
+    [trace_result] = TrackCellBetweenFrames(Cell_Centroid, Cell_Size, Cell_Index, V, C);
 
     disp('Finished!')
 
