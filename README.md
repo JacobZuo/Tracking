@@ -11,6 +11,7 @@ The function can work with Matlab 2019a and should be OK with previous Matlab ve
 Both '.tif' stack and '.nd2' NIS-Elements files are supported. You may need Bio-Format to support ```'.nd2'``` files in Matlab. If your movie (or images) are in another format, such as ```'.avi'``` or ```'.jpg'```, you can transform the movie into a ```'.tif'``` stack with ImageJ.
 
 The movie should be in grayscale (uint16 or unit8). For '.nd2' file, the movie file should be in one series (you can refer to Bio-Format for loading '.nd2' files in Matlab). If your multi-channel movies are recorded in one stack, you can split the fluorescent channel inside the ```Tracking``` function (see Usage 2.2.2 below).
+Liu Siyu
 
 ## 2. Usage
 
