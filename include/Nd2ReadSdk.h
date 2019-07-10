@@ -5,56 +5,67 @@
 /*! \mainpage
    The Nd2ReadSdk is a set of C functions (and structures) declared in Nd2ReadSdk.h.
 
-   Nd2ReadSdk is a thin wrapper around Nd2File library. It uses pointers tot data and JSON
-   to pass out file data and metadata. Internally the SDK uses N. Lohmanns JSON
+   Nd2ReadSdk is a thin wrapper around proprietary LimFile library. It uses pointers and JSON strings
+   to pass out image data and metadata. Internally the SDK uses N. Lohmanns JSON
    library available at https://github.com/nlohmann/json.
 
    The SDK is available on Linux, MacOS and Windows. It consists of:
    - one header file (Nd2ReadSdk.h),
-   - two dynamic libraries (libNd2File.so and libNd2ReadSdk.so for Linux,
-   libNd2File.dylib and libNd2ReadSdk.dylib for MacOS and Nd2File.dll and Nd2ReadSdk.dll for Windows),
-   - two static libraries (libNd2File.a and libNd2ReadSdk.a for Linux and MacOS
-   and Nd2File.lib and Nd2ReadSdk.lib for Windows),
+   - two dynamic libraries (libLimFile.so and libNd2ReadSdk.so for Linux,
+   libLimFile.dylib and libNd2ReadSdk.dylib for MacOS and LimFile.dll and Nd2ReadSdk.dll for Windows),
+   - two static libraries (libLimFile.a and libNd2ReadSdk.a for Linux and MacOS
+   and LimFileStatic.lib and Nd2ReadSdkStatic.lib for Windows),
    - Nd2Info example as source and as built program both dynamic and static version and
    - documentation.
 
+   When linking statically with Nd2ReadSdkStatic:
+   - set the LX_STATIC_LINKING preprocessor definiton and
+   - link to dynamic LimFile or
+   - link to static LimFileStatic and provide static libs for zlib and libtiff
+
    ## Linux dependencies
 
-   On Linux the SDK was built and tested on Debian version 8.4.
+   On Linux the SDK was built and tested on Debian version 8.4 and CentOS version 7.3.
 
    Here are the runtime dependencies of the Nd2Info and Nd2InfoStatic:
 ~~~~~
    $ ldd -d Nd2Info
-	linux-vdso.so.1 (0x00007fff0c867000)
-	libNd2ReadSdk.so => ./libNd2ReadSdk.so (0x00007f4c8bccb000)
-	libNd2File.so => ./libNd2File.so (0x00007f4c8b835000)
-	libicuuc.so.52 => /usr/lib/x86_64-linux-gnu/libicuuc.so.52 (0x00007f4c8b49e000)
-	libicutu.so.52 => /usr/lib/x86_64-linux-gnu/libicutu.so.52 (0x00007f4c8b23b000)
-	libstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f4c8af30000)
-	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f4c8ac2e000)
-	libgomp.so.1 => /usr/lib/x86_64-linux-gnu/libgomp.so.1 (0x00007f4c8aa18000)
-	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f4c8a802000)
-	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f4c8a5e4000)
-	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f4c8a239000)
-	libicudata.so.52 => /usr/lib/x86_64-linux-gnu/libicudata.so.52 (0x00007f4c889cc000)
-	libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f4c887c7000)
-	libicui18n.so.52 => /usr/lib/x86_64-linux-gnu/libicui18n.so.52 (0x00007f4c883b5000)
-	/lib64/ld-linux-x86-64.so.2 (0x000055ab666cd000)
+	linux-vdso.so.1
+	libNd2ReadSdk.so
+	libLimFile.so
+   libz.so.1
+   libtiff.so.5
+	libicuuc.so.50
+	libicutu.so.50
+	libstdc++.so.6
+	libm.so.6
+	libgcc_s.so.1
+   libc.so.6
+   libjbig.so.2.0
+   libjpeg.so.62
+   libicudata.so.50
+	libpthread.so.0	
+	libdl.so.2
+	libicui18n.so.50
+	/lib64/ld-linux-x86-64.so.2
 
    $ ldd -d Nd2InfoStatic
-	linux-vdso.so.1 (0x00007ffda6308000)
-	libicuuc.so.52 => /usr/lib/x86_64-linux-gnu/libicuuc.so.52 (0x00007f87c8dde000)
-	libicutu.so.52 => /usr/lib/x86_64-linux-gnu/libicutu.so.52 (0x00007f87c8b7b000)
-	libstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f87c886f000)
-	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f87c856e000)
-	libgomp.so.1 => /usr/lib/x86_64-linux-gnu/libgomp.so.1 (0x00007f87c8358000)
-	libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f87c8141000)
-	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f87c7f24000)
-	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f87c7b79000)
-	libicudata.so.52 => /usr/lib/x86_64-linux-gnu/libicudata.so.52 (0x00007f87c630b000)
-	libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f87c6107000)
-	libicui18n.so.52 => /usr/lib/x86_64-linux-gnu/libicui18n.so.52 (0x00007f87c5cf5000)
-	/lib64/ld-linux-x86-64.so.2 (0x0000565546b60000)
+   linux-vdso.so.1
+   libz.so.1
+   libtiff.so.5
+   libicuuc.so.50
+   libicutu.so.50
+   libstdc++.so.6
+   libm.so.6
+   libgcc_s.so.1
+   libc.so.6
+   libjbig.so.2.0
+   libjpeg.so.62
+   libicudata.so.50
+   libpthread.so.0
+   libdl.so.2
+   libicui18n.so.50
+   /lib64/ld-linux-x86-64.so.2
 ~~~~~
 
    The libicu*.so are part of the ICU package needed to handle unicide text.
@@ -69,7 +80,7 @@
    $ otool -L Nd2Info
    Nd2Info:
    	@rpath/libNd2ReadSdk.dylib (compatibility version 0.0.0, current version 0.0.0)
-   	@rpath/libNd2File.dylib (compatibility version 0.0.0, current version 0.0.0)
+   	@rpath/libLimFile.dylib (compatibility version 0.0.0, current version 0.0.0)
    	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 400.9.0)
    	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1252.0.0)
 
@@ -83,8 +94,8 @@
 
    On Windows the SDK was built with Microsoft Visual Studio 2015.
 
-   - Nd2Info.exe requires Nd2ReadSdk.dll, msvcp140.dll, vcruntime140.dll and kernel32.dll
-   - Nd2InfoStatic.exe requires msvcp140.dll, vcruntime140.dll and kernel32.dll
+   - Nd2Info.exe requires Nd2ReadSdk.dll,  LimFile.dll, tiff.dll, zlib.dll, msvcp140.dll, vcruntime140.dll and kernel32.dll
+   - Nd2InfoStatic.exe requires tiff.dll, zlib.dll, msvcp140.dll, vcruntime140.dll and kernel32.dll
 
    Visual C++ Redistributable for Visual Studio 2015 (msvcp140.dll and vcruntime140.dll)
    can be downloaded from [Microsoft](https://www.microsoft.com/en-US/download/details.aspx?id=48145).
@@ -113,6 +124,7 @@
        dimensions <no options> - prints coordinate dimensions
        dumpallimages filename - makes superstack of all images
        experiment <no options> - prints experiment
+       imageinfo <no options> - prints image size
        metadata <no options> - prints global metadata
        metadata seqIndex - prints global metadata merged with frame metadata
        metadata "[c0, c1, ...]" - prints global metadata merged with frame metadata

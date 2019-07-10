@@ -10,8 +10,8 @@ The function can work with Matlab 2019a and should be OK with previous Matlab ve
 
 Both '.tif' stack and '.nd2' NIS-Elements files are supported. You may need Bio-Format to support ```'.nd2'``` files in Matlab. If your movie (or images) are in another format, such as ```'.avi'``` or ```'.jpg'```, you can transform the movie into a ```'.tif'``` stack with ImageJ.
 
-The movie should be in grayscale (uint16 or unit8). For '.nd2' file, the movie file should be in one series (you can refer to Bio-Format for loading '.nd2' files in Matlab). If your multi-channel movies are recorded in one stack, you can split the fluorescent channel inside the ```Tracking``` function (see Usage 2.2.2 below).
-Liu Siyu
+The movie should be in grayscale (uint16 or unit8). For '.nd2' file, the movie file should be in one series. Now the script use [nd2reader](https://github.com/JacobZuo/nd2reader) to load '.nd2' file into Matlab. It also provied a Linux version at [nd2reader](https://github.com/JacobZuo/nd2reader) 'Linux' branch. If you are familar with with [Bio-Format](https://www.openmicroscopy.org/bio-formats/), you can change this repo to 'ND2withBioFormat' channel to do tracking with [Bio-Format](https://www.openmicroscopy.org/bio-formats/).
+ If your multi-channel movies are recorded in one series/stack, you can split the fluorescent channel inside the ```Tracking``` function (see Usage 2.2.2 below).
 
 ## 2. Usage
 
@@ -29,6 +29,14 @@ Each cell in ```Trace_All``` will be one trajectory in the movie. The data are r
 Structure ```ImageInfo``` will record some basic information of the movie file. Such as width and height of the image ```ImageInfo.ImageWidth, ImageInfo.ImageHeight```, length of the movie ```ImageInfo.numImages```, and the frames series we use for tracking for multi-channel condtition ```ImageInfo.TrackImageIndex```.
 
 Running the function will also save two data files under the same path of the movie file, a binary ```'.tif'``` stack of the movie and a ```'.mat'``` Matlab data file contains all the intermediate variables.
+
+You can also do tracking with a B/W image with
+
+```matlab
+[Trace_All, ImageInfo] = TrackingBW(BWImage)
+```
+
+```BWImage``` can be a matrix of binary images in Matlab workspace or a filename with full path of the binary images data in ```.mat``` file or an binary ```.tif``` stack.
 
 ### 2.2 Parameter options
 
@@ -98,7 +106,7 @@ To control the quality of the binary image, the default particle/cell size (area
 ```matlab
 CellSize_default = 120;
 ```
-The mean cell size would be around ```CellSize_default``` after appling ```CellSizeControl```. You can change the default cell size if to acquire a better auto threshold result. 
+The mean cell size would be around ```CellSize_default``` after appling ```CellSizeControl```. You can change the default cell size to acquire a better auto threshold result. 
 
 If you would like to turn off auto cell size adjustment. You can use the following command.
 

@@ -10,6 +10,7 @@ else
 end
 
 [Image] = ND2Read(FilePointer, ImagePointer, ImageReadOut, Num);
-calllib('Nd2ReadSdk', 'Lim_FileClose', FilePointer);
+
+ND2Close(FilePointer)
 
 end

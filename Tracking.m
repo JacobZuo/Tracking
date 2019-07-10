@@ -21,9 +21,6 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     % README.md.
     %
 
-    % TODO Test the .tif support.
-    % TODO SpecialCaseDetector.
-
     % Initialization the default parameter
     disp('--------------------------------------------------------------------------------')
     disp('Initialization...')
@@ -101,14 +98,14 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     % PartOne find the locations of cells
     disp('--------------------------------------------------------------------------------')
     disp('Finding cells locations ...')
-    [Cell_Centroid, Cell_Size, V, C] = PositionLocator(CellRegion_All, ImageInfo);
+    [Cell_Centroid, Cell_Size, Cell_Index, V, C] = PositionLocator(CellRegion_All, ImageInfo);
 
     disp('Finished!')
 
     % PartTwo link the cells between neighbour frames
     disp('--------------------------------------------------------------------------------')
     disp('Tracking cells between neighbour frames')
-    [trace_result] = TrackCellBetweenFrames(Cell_Centroid, Cell_Size, V, C);
+    [trace_result] = TrackCellBetweenFrames(Cell_Centroid, Cell_Size, Cell_Index, V, C);
 
     disp('Finished!')
 
@@ -128,31 +125,19 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
 end
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-%    @@   @@  @@   @@   @@        @@    @@@@@                             %
-%    @@ @ @@  @@   @@   @@       @@@@   @@  @@       Wu Lab at CUHK       %
-%    @@ @ @@  @@   @@   @@      @@  @@  @@  @@     All rights reserved    %
-%    @@ @ @@  @@   @@   @@      @@  @@  @@@@@   www.phy.cuhk.edu.hk/ylwu  %
-%     @@@@@   @@   @@   @@      @@@@@@  @@  @@                            %
-%     @@ @@   @@   @@   @@   @  @@  @@  @@  @@    J. Z.: zwlong@live.com  %
-%     @@ @@    @@@@@    @@@@@@  @@  @@  @@@@@                             %
+%  __        ___   _   _        _    ____                                 %
+%  \ \      / / | | | | |      / \  | __ )          Wu Lab at CUHK        %
+%   \ \ /\ / /| | | | | |     / _ \ |  _ \         All rights reserved    %
+%    \ V  V / | |_| | | |___ / ___ \| |_) |    www.phy.cuhk.edu.hk/ylwu   %
+%     \_/\_/   \___/  |_____/_/   \_\____/       J. Z.: zwlong@live.com   %
+%                                                                         %
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-%          @@@@   @@  @@  @@  @@  @@  @@                                  %
-%         @@  @@  @@  @@  @@  @@  @@ @@              Wu Lab at CUHK       %
-%         @@      @@  @@  @@  @@  @@@@             All rights reserved    %
-%         @@      @@  @@  @@@@@@  @@@           www.phy.cuhk.edu.hk/ylwu  %
-%         @@      @@  @@  @@  @@  @@@@                                    %
-%         @@  @@  @@  @@  @@  @@  @@ @@           J. Z.: zwlong@live.com  %
-%          @@@@    @@@@   @@  @@  @@  @@                                  %
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-%        @@@@    @@     @@@@    @@@@   @@@@@                              %
-%         @@    @@@@   @@  @@  @@  @@  @@  @@        Wu Lab at CUHK       %
-%         @@   @@  @@  @@      @@  @@  @@  @@      All rights reserved    %
-%         @@   @@  @@  @@      @@  @@  @@@@@    www.phy.cuhk.edu.hk/ylwu  %
-%         @@   @@@@@@  @@      @@  @@  @@  @@                             %
-%     @@  @@   @@  @@  @@  @@  @@  @@  @@  @@     J. Z.: zwlong@live.com  %
-%      @@@@    @@  @@   @@@@    @@@@   @@@@@                              %
+%       _      _       ____    ___    ____                                %
+%      | |    / \     / ___|  / _ \  | __ )         Wu Lab at CUHK        %
+%   _  | |   / _ \   | |     | | | | |  _ \       All rights reserved     %
+%  | |_| |  / ___ \  | |___  | |_| | | |_) |  https://jacobzuo.github.io  %
+%   \___/  /_/   \_\  \____|  \___/  |____/      J. Z.: zwlong@live.com   %
+%                                                                         %
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
