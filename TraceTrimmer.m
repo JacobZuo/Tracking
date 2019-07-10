@@ -1,5 +1,6 @@
 function [Trace_Trimmed] = TraceTrimmer(Trace_All, varargin)
     MaxSpeed=20;
+    MinSpeed=0.1;
     if isempty(varargin)
         Trace_length_min = 0;
     else
@@ -14,7 +15,7 @@ function [Trace_Trimmed] = TraceTrimmer(Trace_All, varargin)
     for i = 1:size(Trace_All, 2)
         CellSize = Trace_All{i}(:, 4);
         CellSpeed = [0; ((Trace_All{i}(2:end, 2)-Trace_All{i}(1:end-1, 2)).^2+(Trace_All{i}(2:end, 3)-Trace_All{i}(1:end-1, 3)).^2).^0.5];
-        Index = find(CellSize < mean(CellSize) * 0.2 | CellSize > mean(CellSize) * 1.8 | CellSpeed > MaxSpeed);
+        Index = find(CellSize < mean(CellSize) * 0.2 | CellSize > mean(CellSize) * 1.8 | CellSpeed > MaxSpeed | CellSpeed < MinSpeed);
 
         if isempty(Index)
             Trace_All_Trimmed{end + 1} = Trace_All{i};
