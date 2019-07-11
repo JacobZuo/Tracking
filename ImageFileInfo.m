@@ -8,7 +8,7 @@ function [ImageInfo] = ImageFileInfo(FileName,ChannelNum,varargin)
 
     [Path, Name, Type] = fileparts(FileName);
     ImageInfo.File_id = FileName;
-    ImageInfo.Path = [Path, '\'];
+    ImageInfo.Path = [Path, filesep];
     ImageInfo.FileName = Name;
     ImageInfo.FileType = Type;
 

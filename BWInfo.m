@@ -9,7 +9,7 @@ function [ImageInfo, BW_Image] = BWInfo(BW_Image_File)
             
             if exist('ImageInfo', 'var')
             else
-                ImageInfo.Path = [Path, '\'];
+                ImageInfo.Path = [Path, filesep];
                 ImageInfo.FileName = FileName;
                 ImageInfo.numImages = size(BW_Image, 3);
                 ImageInfo.ImageWidth = size(BW_Image, 2);
@@ -23,7 +23,7 @@ function [ImageInfo, BW_Image] = BWInfo(BW_Image_File)
             if exist('ImageInfo', 'var')
             else
                 ImageInfo.main = imfinfo(BW_Image_File);
-                ImageInfo.Path = [Path, '\'];
+                ImageInfo.Path = [Path, filesep];
                 ImageInfo.FileName = FileName;
                 ImageInfo.numImages = size(ImageInfo.main, 1);
                 ImageInfo.ImageWidth = ImageInfo.main(1).Width;
@@ -34,7 +34,7 @@ function [ImageInfo, BW_Image] = BWInfo(BW_Image_File)
         BW_Image = BW_Image_File;
         if exist('ImageInfo', 'var')
         else
-            ImageInfo.Path = [pwd, '\'];
+            ImageInfo.Path = [pwd, filesep];
             ImageInfo.FileName = char(datetime('now', 'format', 'yyyy-MM-dd-HH-mm-ss'));
             ImageInfo.numImages = size(BW_Image, 3);
             ImageInfo.ImageWidth = size(BW_Image, 2);
