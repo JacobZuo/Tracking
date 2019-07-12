@@ -16,21 +16,18 @@ function [Trace_All] = TrackingBW(BW_Image_File, varargin)
     disp('Finding cells locations ...')
     [Cell_Centroid, Cell_Size, Cell_Index, V, C] = PositionLocator(CellRegion_All, ImageInfo);
 
-    disp('Finished!')
 
     % PartTwo link the cells between neighbour frames
     disp('--------------------------------------------------------------------------------')
     disp('Tracking cells between neighbour frames')
     [trace_result] = TrackCellBetweenFrames(Cell_Centroid, Cell_Size, Cell_Index, V, C);
 
-    disp('Finished!')
 
     % PartThree connect all the traces
     disp('--------------------------------------------------------------------------------')
     disp('Connect cells traces')
     [Trace_All] = TraceConnector(trace_result);
 
-    disp('Finished!')
     disp('--------------------------------------------------------------------------------')
     disp('Saving data!')
     clear('i')
