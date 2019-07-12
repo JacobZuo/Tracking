@@ -21,7 +21,7 @@ function [Background_nor] = BackgroundNormalization(ImageInfo)
         end
 
     else
-        disp('Error')
+        warning('Error')
         return
     end
 
@@ -45,7 +45,9 @@ function [Background_nor] = BackgroundNormalization(ImageInfo)
 
     if gof.adjrsquare > 0.9
     else
-        disp(['Warning, fitting normalization background with RSquare of ', num2str(gof.adjrsquare)])
+        warning('off','backtrace')
+        warning(['Fitting normalization background with RSquare of ', num2str(gof.adjrsquare)])
+        warning('on','backtrace')
     end
 
     [X_BG, Y_BG] = meshgrid(1:ImageInfo.ImageWidth, 1:ImageInfo.ImageHeight);

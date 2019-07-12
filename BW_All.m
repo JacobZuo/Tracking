@@ -37,7 +37,7 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
         [FilePointer,ImagePointer,ImageReadOut] = ND2Open(File_id);
     elseif strcmp(ImageInfo.FileType, '.tif')
     else
-        disp('Error!')
+        warning('Error!')
         return
     end
 
@@ -51,7 +51,7 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
         elseif strcmp(ImageInfo.FileType, '.tif')
             Original_Image = imread(File_id, 'Index', TrackImageIndex(i), 'Info', ImageInfo.main);
         else
-            disp('Error!')
+            warning('Error!')
             return
         end
 
@@ -75,7 +75,9 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
 
     if min(CellNumDetected) < 8
         LowCellNumFrame = TrackImageIndex(CellNumDetected == min(CellNumDetected));
-        disp(['Warning, too few cells detected at frame ', num2str(LowCellNumFrame)])
+        warning('off','backtrace')
+        warning(['Too few cells detected at frame ', num2str(LowCellNumFrame)])
+        warning('on','backtrace')
 
         %     for i = 1:size(LowCellNumFrame, 2)
         %         Original_Image = bfGetPlane(r, TrackImageIndex(LowCellNumFrame(i)));
@@ -89,7 +91,9 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
 
     if max(CellNumDetected) > 300
         ManyCellNumFrame = TrackImageIndex(CellNumDetected == min(CellNumDetected));
-        disp(['Warning, too many cells detected at frame ', num2str(ManyCellNumFrame)])
+        warning('off','backtrace')
+        warning(['Too many cells detected at frame ', num2str(ManyCellNumFrame)])
+        warning('on','backtrace')
 
         %     for i = 1:size(ManyCellNumFrame, 2)
         %         Original_Image = bfGetPlane(r, TrackImageIndex(ManyCellNumFrame(i)));

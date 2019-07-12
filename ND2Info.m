@@ -1,6 +1,7 @@
 function [ImageInfo] = ND2Info(FileName)
 
 if not(libisloaded('Nd2ReadSdk'))
+    warning('off', 'MATLAB:loadlibrary:cppoutput')
     [~, ~] = loadlibrary('Nd2ReadSdk', 'Nd2ReadSdk.h');
 end
 
@@ -81,16 +82,16 @@ ImageInfo.numImages = numImages;
 ImageInfo.CoordSize = CoordSize;
 
 % ImageInfo.NumInCoord = NumInCoord;
-
+warning('off','backtrace')
 if AttributesStru.widthBytes==AttributesStru.widthPx*AttributesStru.componentCount*AttributesStru.bitsPerComponentInMemory/8
     ImageInfo.ImageWidth = AttributesStru.widthPx;
     ImageInfo.ImageWidthOriginal = AttributesStru.widthPx;
 else
-    disp('Warning, image width is not fit the bytes of width. Reset image width.')
+    warning('Image width is not fit the bytes of width. Reset image width.')
     ImageInfo.ImageWidth=AttributesStru.widthBytes/AttributesStru.componentCount/(AttributesStru.bitsPerComponentInMemory/8);
     ImageInfo.ImageWidthOriginal = AttributesStru.widthPx;
 end
-
+warning('on','backtrace')
 
 
 ImageInfo.ImageHeight = AttributesStru.heightPx;

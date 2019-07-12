@@ -1,6 +1,7 @@
 function [FilePointer, ImagePointer, ImageReadOut] = ND2Open(FileName)
 
     if not(libisloaded('Nd2ReadSdk'))
+        warning('off', 'MATLAB:loadlibrary:cppoutput')
         [~, ~] = loadlibrary('Nd2ReadSdk', 'Nd2ReadSdk.h');
     end
 
@@ -29,7 +30,9 @@ function [FilePointer, ImagePointer, ImageReadOut] = ND2Open(FileName)
           
     if ImageStru.uiWidthBytes==ImageStru.uiWidth*ImageStru.uiComponents*ImageStru.uiBitsPerComp/8
     else
-        disp('Warning, image width is not fit the bytes of width. Reset image width.')
+        warning('off','backtrace')
+        warning('Image width is not fit the bytes of width. Reset image width.')
+        warning('off','backtrace')
         ImageStru.uiWidth=ImageStru.uiWidthBytes/ImageStru.uiComponents/(ImageStru.uiBitsPerComp/8);
     end
     

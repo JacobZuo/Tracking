@@ -11,8 +11,9 @@ ImageIntensity=zeros(1,ChannelNum);
 if exist('TrackChannel','var')
     if TrackChannel>ChannelNum
         ChannelNum=TrackChannel;
-        disp('Warning ChannelNum should be larger than the channel index you want to track.')
-        disp(['Set ChannelNum to ',num2str(ChannelNum),'!'])
+        warning('off','backtrace')
+        warning('%s\n%s', 'ChannelNum should be larger than the channel index you want to track.', ['Set ChannelNum to ',num2str(ChannelNum),'!'])
+        warning('on','backtrace')
     else
     end
     ImageInfo.TrackChannel=TrackChannel;

@@ -26,6 +26,10 @@ function [MeanCellSize] = CellSizeTest(ImageInfo, Background_nor, BlurSize, Exte
     CellRegion = regionprops(BW_Image);
     CellRegion_array = (reshape(struct2array(CellRegion), [7, size(CellRegion, 1)]))';
     MeanCellSize = mean(CellRegion_array(:, 1));
+
+    warning('off','images:initSize:adjustingMag')
+    figure
     imshow(BW_Image)
+    warning('on','images:initSize:adjustingMag')
 
 end

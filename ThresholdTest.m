@@ -39,7 +39,9 @@ function [BlurSize, ExtensionRatio] = ThresholdTest(ImageInfo, Background_nor)
     end
     
     if exist('Warning', 'var')
-        disp('Warning, fitting background hist with RSquare < 0.98.')
+        warning('off','backtrace')
+        warning('Fitting background hist with RSquare < 0.98.')
+        warning('on','backtrace')
         clear('Warning')
     else
     end
@@ -74,7 +76,9 @@ function [BlurSize, ExtensionRatio] = ThresholdTest(ImageInfo, Background_nor)
     end
     
     if exist('Warning', 'var')
-        disp('Warning, fitting background hist with RSquare < 0.98.')
+        warning('off','backtrace')
+        warning('Fitting background hist with RSquare < 0.98.')
+        warning('on','backtrace')
         clear('Warning')
     else
     end

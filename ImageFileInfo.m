@@ -27,12 +27,14 @@ function [ImageInfo] = ImageFileInfo(FileName,ChannelNum,varargin)
         ImageInfo.ImageHeight = ImageInfo.main(1).Height;
 
     else
-        disp(['Do not support ', FileType, ' file'])
+        warning(['Do not support ', FileType, ' file'])
         return
     end
 
     if ImageInfo.numImages < 20
-        disp('Warning, too short movie for tracking cell motion.')
+        warning('off','backtrace')
+        warning('Too short movie for tracking cell motion.')
+        warning('on','backtrace')
     else
     end
 

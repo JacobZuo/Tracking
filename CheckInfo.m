@@ -1,5 +1,5 @@
 function [ImageInfo] = CheckInfo(ImageInfo)
-
+    warning('off','backtrace')
     MetadataStru = ImageInfo.metadata;
     ExperimentStru = ImageInfo.Experiment;
 
@@ -48,9 +48,8 @@ function [ImageInfo] = CheckInfo(ImageInfo)
     end
     
     if isempty(MetadataStru)
-        disp('Warning, can not get Metadata');
-        disp('Set channel infomation with ImageInfo.description');
-
+        warning('%s\n%s','Can not get Metadata.','Set channel infomation with ImageInfo.description.');
+        
         MetadataStru.contents.channelCount = ChannelNum;
 
         for i = 1:ChannelNum
@@ -61,14 +60,14 @@ function [ImageInfo] = CheckInfo(ImageInfo)
 
         if MetadataStru.contents.channelCount == ChannelNum
         else
-            disp('Warning, channel number not match')
+            warning('Channel number not match')
         end
 
         for i = 1:ChannelNum
 
             if strcmp(MetadataStru.channels(i).channel.name, Channel(i).name)
             else
-                disp(['Warning, channel ', num2str(i), ' name not match'])
+                warning(['Channel ', num2str(i), ' name not match'])
             end
 
         end
@@ -76,12 +75,11 @@ function [ImageInfo] = CheckInfo(ImageInfo)
     end
 
     if isempty(ExperimentStru)
-        disp('Warning, can not get Experiment Info');
-        disp('Set loops infomation with ImageInfo.description');
+        warning('%s\n%s','Can not get Experiment Info.','Set loops infomation with ImageInfo.description.');
 
         for i = 1:size(DimensionsStruct, 2)
-            ExperimentStru(i).count = DimensionsStruct(i).Size;
-            ExperimentStru(i).type = [DimensionsStruct(i).name, 'loop'];
+            ExperimentStru(i,1).count = DimensionsStruct(i).Size;
+            ExperimentStru(i,1).type = [DimensionsStruct(i).name, 'loop'];
         end
 
     else
@@ -90,15 +88,13 @@ function [ImageInfo] = CheckInfo(ImageInfo)
 
             if contains(ExperimentStru(i).type, DimensionsStruct(i).name)
             else
-                disp(['Warning, loop name not match in loop ', num2str(i), ', name ', ExperimentStru(i).type, ' vs ', DimensionsStruct(i).name, 'Loop'])
-                disp('Set loops infomation with ImageInfo.description');
+                warning('%s\n%s',['Loop name not match in loop ', num2str(i), ', name ', ExperimentStru(i).type, ' vs ', DimensionsStruct(i).name, 'Loop.'], 'Set loops infomation with ImageInfo.description');
                 ExperimentStru(i).type = [DimensionsStruct(i).name, 'loop'];
             end
 
             if ExperimentStru(i).count == DimensionsStruct(i).Size
             else
-                disp(['Warning, loop size not match in ', ExperimentStru(i).type])
-                disp('Set loops infomation with ImageInfo.description');
+                warning('%s\n%s', ['Loop size not match in ', ExperimentStru(i).type, '.'], 'Set loops infomation with ImageInfo.description.')
                 ExperimentStru(i).count = DimensionsStruct(i).Size;
             end
 
@@ -106,17 +102,24 @@ function [ImageInfo] = CheckInfo(ImageInfo)
 
     end
 
+    if ImageInfo.CoordSize==size(ExperimentStru,1)
+    else
+        warning('%s\n%s', ['CoordSize not match.'], 'Set CoordSize infomation with ImageInfo.description.')   
+        ImageInfo.CoordSize=size(ExperimentStru,1);
+    end
+    
     ImageCount=1;
-    for i=1:size(ExperimentStru,3)
+    for i=1:size(ExperimentStru,1)
         ImageCount=ExperimentStru(i).count*ImageCount;
     end
     
     if ImageCount==ImageInfo.numImages
     else
-        disp('Warning, Image number not match!!!');
+        warning('Image number not match!!!');
         return
     end
+    
     ImageInfo.metadata = MetadataStru;
     ImageInfo.Experiment = ExperimentStru;
-
+    warning('on','backtrace')
 end
