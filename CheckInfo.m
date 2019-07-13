@@ -104,7 +104,7 @@ function [ImageInfo] = CheckInfo(ImageInfo)
 
     if ImageInfo.CoordSize==size(ExperimentStru,1)
     else
-        warning('%s\n%s', ['CoordSize not match.'], 'Set CoordSize infomation with ImageInfo.description.')   
+        warning('%s\n%s', 'CoordSize not match.', 'Set CoordSize infomation with ImageInfo.description.')   
         ImageInfo.CoordSize=size(ExperimentStru,1);
     end
     
