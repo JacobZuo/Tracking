@@ -33,7 +33,7 @@ function [ImageInfo, BW_Image] = BWInfo(BW_Image_File)
     else
         BW_Image = BW_Image_File;
         if exist('ImageInfo', 'var')
-        else
+        els
             ImageInfo.Path = [pwd, filesep];
             ImageInfo.FileName = char(datetime('now', 'format', 'yyyy-MM-dd-HH-mm-ss'));
             ImageInfo.numImages = size(BW_Image, 3);
