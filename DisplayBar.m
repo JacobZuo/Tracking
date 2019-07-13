@@ -21,9 +21,11 @@ function [Percentage, Barlength] = DisplayBar(Index, Length)
     end
     
     if Barlength == 60
-        TimeSpendText=['Time Used: ', datestr(seconds(TimeSpend),'HH:MM:SS'),' s', '\n'];
+        CountText=[num2str(Length),' Rounds Processed'];
+        TimeSpendText=['Time Used: ', datestr(seconds(TimeSpend),'HH:MM:SS'),' s', repmat(' ',1,10), CountText, '\n'];
     else
-        TimeSpendText=['Time Used: ', datestr(seconds(TimeSpend),'HH:MM:SS'),' s',repmat(' ',1,10), 'Time Remained: ', datestr(seconds((TimeSpend/Percentage*100)-TimeSpend),'HH:MM:SS'),' s', repmat(' ',1,24)];
+        CountText=[num2str(Index),'/',num2str(Length),' Processed'];        
+        TimeSpendText=['Time Used: ', datestr(seconds(TimeSpend),'HH:MM:SS'),' s', repmat(' ',1,10), 'Time Remained: ', datestr(seconds((TimeSpend/Percentage*100)-TimeSpend),'HH:MM:SS'),' s', repmat(' ',1,24-length(CountText)), CountText];
     end
     
     fprintf([BarStart, BarText, '\n', TimeSpendText])
