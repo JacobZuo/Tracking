@@ -27,7 +27,7 @@ function [TraceMovie] = TracePlayer(ImageInfo, Background_nor, Trace)
         elseif strcmp(ImageInfo.FileType, '.tif')
             Original_Image = imread(File_id, 'Index', TrackImageIndex(Trace(i, 1)), 'Info', ImageInfo.main);
         else
-            warnings('Error!')
+            warning('Error!')
             return
         end
 

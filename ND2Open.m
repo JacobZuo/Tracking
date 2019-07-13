@@ -32,7 +32,7 @@ function [FilePointer, ImagePointer, ImageReadOut] = ND2Open(FileName)
     else
         warning('off','backtrace')
         warning('Image width is not fit the bytes of width. Reset image width.')
-        warning('off','backtrace')
+        warning('on','backtrace')
         ImageStru.uiWidth=ImageStru.uiWidthBytes/ImageStru.uiComponents/(ImageStru.uiBitsPerComp/8);
     end
     
