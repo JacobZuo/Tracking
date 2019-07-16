@@ -22,7 +22,7 @@ git clone git@github.com:JacobZuo/nd2reader-linux.git nd2reader
 Then you can copy the files in nd2reader into Tracking and overwriter the original files.
 
 ```bash
-sudo cp -rf nd2reader/* Tracking
+sudo cp -rf nd2reader/{include/,Linux/,*.m} Tracking
 ```
 Enjoy.
 
