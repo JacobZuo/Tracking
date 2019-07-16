@@ -6,11 +6,26 @@
 
 This repo contains the source codes for tracking particles motion with Matlab. For now, we can only do tracking with fluorescent OR dark filed movies (i.e., the objects should be brighter than the background).
 
-The function can work with Matlab 2019a and should be OK with previous Matlab version (early to 2014a) too. In early Matlab, function ```imwrite``` may cause problems when saving an image into ```'.tif'``` stack with Windows OS.
+The function can work with Matlab 2018a and should be OK with previous Matlab version (early to 2014a) too. In early Matlab, function ```imwrite``` may cause problems when saving an image into ```'.tif'``` stack with Windows OS.
 
-Both '.tif' stack and '.nd2' NIS-Elements files are supported. You may need Bio-Format to support ```'.nd2'``` files in Matlab. If your movie (or images) are in another format, such as ```'.avi'``` or ```'.jpg'```, you can transform the movie into a ```'.tif'``` stack with ImageJ.
+Both '.tif' stack and '.nd2' NIS-Elements files are supported. If your movie (or images) are in another format, such as ```'.avi'``` or ```'.jpg'```, you can transform the movie into a ```'.tif'``` stack with ImageJ.
 
 The movie should be in grayscale (uint16 or unit8). For '.nd2' file, the movie file should be in one series. Now the script use [nd2reader](https://github.com/JacobZuo/nd2reader) to load '.nd2' file into Matlab. It also provied a Linux version at [nd2reader-linux](https://github.com/JacobZuo/nd2reader-linux). If you are familar with with [Bio-Format](https://www.openmicroscopy.org/bio-formats/), you can change this repo to 'ND2withBioFormat' channel to do tracking with [Bio-Format](https://www.openmicroscopy.org/bio-formats/).
+
+For users working with linux. You can clone both ```Trakcing``` and ```nd2reader-linux``` to your working path, such as
+
+```bash
+git clone git@github.com:JacobZuo/Tracking.git Tracking
+git clone git@github.com:JacobZuo/nd2reader-linux.git nd2reader 
+```
+
+Then you can copy the files in nd2reader into Tracking and overwriter the original files.
+
+```bash
+sudo cp -rf nd2reader/* Tracking
+```
+Enjoy.
+
  If your multi-channel movies are recorded in one series/stack, you can split the fluorescent channel inside the ```Tracking``` function (see Usage 2.2.2 below).
 
 ## 2. Usage
