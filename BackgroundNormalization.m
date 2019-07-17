@@ -12,7 +12,7 @@ function [Background_nor] = BackgroundNormalization(ImageInfo)
         [FilePointer,ImagePointer,ImageReadOut] = ND2Open(File_id);
         Background = ND2Read(FilePointer,ImagePointer,ImageReadOut,Num);
         ND2Close(FilePointer);
-        
+        clear('FilePointer');
     elseif strcmp(ImageInfo.FileType, '.tif')
 
         for i = 1:(floor(size(TrackImageIndex, 2) / 20) + 1):size(TrackImageIndex, 2)

@@ -69,7 +69,8 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
     end
 
     if strcmp(ImageInfo.FileType, '.nd2')
-        ND2Close(FilePointer)
+        ND2Close(FilePointer);
+        clear('FilePointer');
     else
     end
 
