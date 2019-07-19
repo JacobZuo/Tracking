@@ -2,7 +2,7 @@
 
 ![BSD- License](https://img.shields.io/pypi/l/Django.svg)
 
-## 1. Overview
+## 0. Overview
 
 This repo contains the source codes for tracking particles motion with Matlab. For now, we can only do tracking with fluorescent OR dark filed movies (i.e., the objects should be brighter than the background).
 
@@ -12,7 +12,23 @@ Both '.tif' stack and '.nd2' NIS-Elements files are supported. If your movie (or
 
 The movie should be in grayscale (uint16 or unit8). For '.nd2' file, the movie file should be in one series. Now the script use [nd2reader](https://github.com/JacobZuo/nd2reader) to load '.nd2' file into Matlab. It also provied a Linux version at [nd2reader-linux](https://github.com/JacobZuo/nd2reader-linux). If you are familar with with [Bio-Format](https://www.openmicroscopy.org/bio-formats/), you can change this repo to 'ND2withBioFormat' channel to do tracking with [Bio-Format](https://www.openmicroscopy.org/bio-formats/).
 
-For users working with linux. You can clone both ```Trakcing``` and ```nd2reader-linux``` to your working path, such as
+## 1. Installation
+
+For users working with ```git on Windows```, you can fork/clone the repo with.
+
+``` sh
+git clone git@github.com:JacobZuo/Tracking.git Tracking
+```
+
+If you do not get the nd2reader submodule automatically, try
+
+``` sh
+git submodule update --init
+```
+
+For users directly download the ```.zip``` file from Github, you need to download [nd2reader](https://github.com/JacobZuo/nd2reader) manually.
+
+For users working with linux, you can clone both ```Trakcing``` and ```nd2reader-linux``` to your working path, 
 
 ```bash
 git clone git@github.com:JacobZuo/Tracking.git Tracking
@@ -22,11 +38,11 @@ git clone git@github.com:JacobZuo/nd2reader-linux.git nd2reader
 Then you can copy the files in nd2reader into Tracking and overwriter the original files.
 
 ```bash
-sudo cp -rf nd2reader/{include/,Linux/,*.m} Tracking
+sudo rm -rf Tracking/nd2reader/
+sudo cp -rf nd2reader/ Tracking/
 ```
-Enjoy.
 
- If your multi-channel movies are recorded in one series/stack, you can split the fluorescent channel inside the ```Tracking``` function (see Usage 2.2.2 below).
+Enjoy.
 
 ## 2. Usage
 
