@@ -2,7 +2,7 @@ function [ImageInfo] = StackSplitter(ImageInfo,ChannelNum,varargin)
 
 if isempty(varargin)
 else
-    TrackChannel=varargin;
+    TrackChannel=cell2mat(varargin{1});
 end
 
 ImageIntensity=zeros(1,ChannelNum);
@@ -11,8 +11,9 @@ ImageIntensity=zeros(1,ChannelNum);
 if exist('TrackChannel','var')
     if TrackChannel>ChannelNum
         ChannelNum=TrackChannel;
-        disp('Warning ChannelNum should be larger than the channel index you want to track.')
-        disp(['Set ChannelNum to ',num2str(ChannelNum),'!'])
+        warning('off','backtrace')
+        warning('%s\n%s', 'ChannelNum should be larger than the channel index you want to track.', ['Set ChannelNum to ',num2str(ChannelNum),'!'])
+        warning('on','backtrace')
     else
     end
     ImageInfo.TrackChannel=TrackChannel;
@@ -29,13 +30,9 @@ else
             Original_Image=bfGetPlane(r, i);
             r.close();
             clear r
-        elseif strcmp(ImageInfo.FileType,'.tif')
-            Original_Image=imread(File_id,'Index',i,'Info',ImageInfo.main);
-        else
-            disp('Error!')
-            return
+        elseif strcmp(ImageInfo.FileType,'.tif')            
+            Original_Image=imread(ImageInfo.File_id,'Index',i,'Info',ImageInfo.main);
         end
-        
         ImageIntensity(i)=sum(Original_Image(:));
     end
     ImageInfo.TrackChannel=find(min(ImageIntensity));

@@ -6,17 +6,9 @@ function [MeanCellSize] = CellSizeTest(ImageInfo, Background_nor, BlurSize, Exte
 
     if isempty(varargin)
     else
-
         for i = 1:(size(varargin, 2) / 2)
-
-            if ischar(varargin{i * 2})
-                eval([varargin{i * 2 - 1}, ' = ''', varargin{i * 2}, '''; ']);
-            else
-                eval([varargin{i * 2 - 1}, '=', num2str(varargin{i * 2}), ';']);
-            end
-
+        	AssignVar(varargin{i * 2 - 1}, varargin{i * 2})
         end
-
     end
 
     File_id = ImageInfo.File_id;
@@ -27,7 +19,7 @@ function [MeanCellSize] = CellSizeTest(ImageInfo, Background_nor, BlurSize, Exte
         Original_Image = bfGetPlane(r, TrackChannel);
         r.close();
         clear r
-    elseif strcmp(ImageInfo.FileType, '.tif')
+        elseif strcmp(ImageInfo.FileType, '.tif')
         Original_Image = imread(File_id, 'Index', TrackChannel, 'Info', ImageInfo.main);
     end
 
@@ -37,6 +29,10 @@ function [MeanCellSize] = CellSizeTest(ImageInfo, Background_nor, BlurSize, Exte
     CellRegion = regionprops(BW_Image);
     CellRegion_array = (reshape(struct2array(CellRegion), [7, size(CellRegion, 1)]))';
     MeanCellSize = mean(CellRegion_array(:, 1));
+
+    warning('off','images:initSize:adjustingMag')
+    figure
     imshow(BW_Image)
+    warning('on','images:initSize:adjustingMag')
 
 end

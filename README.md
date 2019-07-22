@@ -1,16 +1,48 @@
 # Paticle/Cell tracking (Matlab)
 
-![PyPI - License](https://img.shields.io/pypi/l/Django.svg)
+![BSD- License](https://img.shields.io/pypi/l/Django.svg)
 
-## 1. Overview
+## 0. Overview
 
 This repo contains the source codes for tracking particles motion with Matlab. For now, we can only do tracking with fluorescent OR dark filed movies (i.e., the objects should be brighter than the background).
 
-The function can work with Matlab 2019a and should be OK with previous Matlab version (early to 2014a) too. In early Matlab, function ```imwrite``` may cause problems when saving an image into ```'.tif'``` stack with Windows OS.
+The function can work with Matlab 2018a and should be OK with previous Matlab version (early to 2014a) too. In early Matlab, function ```imwrite``` may cause problems when saving an image into ```'.tif'``` stack with Windows OS.
 
-Both '.tif' stack and '.nd2' NIS-Elements files are supported. You may need Bio-Format to support ```'.nd2'``` files in Matlab. If your movie (or images) are in another format, such as ```'.avi'``` or ```'.jpg'```, you can transform the movie into a ```'.tif'``` stack with ImageJ.
+Both '.tif' stack and '.nd2' NIS-Elements files are supported. If your movie (or images) are in another format, such as ```'.avi'``` or ```'.jpg'```, you can transform the movie into a ```'.tif'``` stack with ImageJ.
 
-The movie should be in grayscale (uint16 or unit8). For '.nd2' file, the movie file should be in one series (you can refer to Bio-Format for loading '.nd2' files in Matlab). If your multi-channel movies are recorded in one stack, you can split the fluorescent channel inside the ```Tracking``` function (see Usage 2.2.2 below).
+The movie should be in grayscale (uint16 or unit8). For '.nd2' file, the movie file should be in one series. Now the script use [nd2reader](https://github.com/JacobZuo/nd2reader) to load '.nd2' file into Matlab. It also provied a Linux version at [nd2reader-linux](https://github.com/JacobZuo/nd2reader-linux). If you are familar with with [Bio-Format](https://www.openmicroscopy.org/bio-formats/), you can change this repo to 'ND2withBioFormat' channel to do tracking with [Bio-Format](https://www.openmicroscopy.org/bio-formats/).
+
+## 1. Installation
+
+For users working with ```git on Windows```, you can fork/clone the repo with.
+
+``` sh
+git clone git@github.com:JacobZuo/Tracking.git Tracking
+```
+
+If you do not get the nd2reader submodule automatically, try
+
+``` sh
+git submodule update --init
+```
+
+For users directly download the ```.zip``` file from Github, you need to download [nd2reader](https://github.com/JacobZuo/nd2reader) manually.
+
+For users working with linux, you can clone both ```Trakcing``` and ```nd2reader-linux``` to your working path, 
+
+```bash
+git clone git@github.com:JacobZuo/Tracking.git Tracking
+git clone git@github.com:JacobZuo/nd2reader-linux.git nd2reader 
+```
+
+Then you can copy the files in nd2reader into Tracking and overwriter the original files.
+
+```bash
+sudo rm -rf Tracking/nd2reader/
+sudo cp -rf nd2reader/ Tracking/
+```
+
+Enjoy.
 
 ## 2. Usage
 
@@ -28,6 +60,14 @@ Each cell in ```Trace_All``` will be one trajectory in the movie. The data are r
 Structure ```ImageInfo``` will record some basic information of the movie file. Such as width and height of the image ```ImageInfo.ImageWidth, ImageInfo.ImageHeight```, length of the movie ```ImageInfo.numImages```, and the frames series we use for tracking for multi-channel condtition ```ImageInfo.TrackImageIndex```.
 
 Running the function will also save two data files under the same path of the movie file, a binary ```'.tif'``` stack of the movie and a ```'.mat'``` Matlab data file contains all the intermediate variables.
+
+You can also do tracking with a B/W image with
+
+```matlab
+[Trace_All, ImageInfo] = TrackingBW(BWImage)
+```
+
+```BWImage``` can be a matrix of binary images in Matlab workspace or a filename with full path of the binary images data in ```.mat``` file or an binary ```.tif``` stack.
 
 ### 2.2 Parameter options
 
@@ -97,7 +137,7 @@ To control the quality of the binary image, the default particle/cell size (area
 ```matlab
 CellSize_default = 120;
 ```
-The mean cell size would be around ```CellSize_default``` after appling ```CellSizeControl```. You can change the default cell size if to acquire a better auto threshold result. 
+The mean cell size would be around ```CellSize_default``` after appling ```CellSizeControl```. You can change the default cell size to acquire a better auto threshold result. 
 
 If you would like to turn off auto cell size adjustment. You can use the following command.
 
@@ -144,17 +184,20 @@ Function ```activecontour``` can work independent of ```CellSizeControl```.
 
 ### 3.1 Process bar
 
-There is a processing bar in ```>``` style displayed in Matlab command window when running ```for``` loops during tracking.
+There is a processing bar in ```[##>---]``` style displayed in Matlab command window when running ```for``` loops during tracking.
 
-The function ```DisplayBar``` is used to display the processing bar. The number of ```>``` on the screen indicates the percentage of the progress. You can also use the process bar in all ```for``` loops as below,
+The function ```DisplayBar``` is used to display the processing bar. The number of ```#``` on the screen indicates the percentage of the progress. The process bar is 80 characters in width. You can also use the process bar in all ```for``` loops as below,
 
 ```matlab
-Barlength = 0;
 for Index = 1:Length
     ......
-    [Percentage, Barlength] = DisplayBar(Index, Length, Barlength)
+    [Percentage, Barlength] = DisplayBar(Index, Length);
 end
 ```
+The bar would be shown in the command windows as below.
+
+![](Resource/DisplayBar.gif)
+
 
 ### 3.2 Trace trimmer
 
