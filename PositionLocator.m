@@ -19,6 +19,7 @@ for i = 1:size(CellRegion_All,2)
     center{i}(end-3:end,:)=[];
     
     DisplayBar(i,size(CellRegion_All,2));
+
 end
 
 end
