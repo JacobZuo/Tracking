@@ -18,29 +18,10 @@ For users working with ```git on Windows```, you can fork/clone the repo with.
 
 ``` sh
 git clone git@github.com:JacobZuo/Tracking.git Tracking
+git checkout -b ND2withBioFormat origin/ND2withBioFormat 
 ```
 
-If you do not get the nd2reader submodule automatically, try
-
-``` sh
-git submodule update --init
-```
-
-For users directly download the ```.zip``` file from Github, you need to download [nd2reader](https://github.com/JacobZuo/nd2reader) manually.
-
-For users working with linux, you can clone both ```Trakcing``` and ```nd2reader-linux``` to your working path, 
-
-```bash
-git clone git@github.com:JacobZuo/Tracking.git Tracking
-git clone git@github.com:JacobZuo/nd2reader-linux.git nd2reader 
-```
-
-Then you can copy the files in nd2reader into Tracking and overwriter the original files.
-
-```bash
-sudo rm -rf Tracking/nd2reader/
-sudo cp -rf nd2reader/ Tracking/
-```
+For users directly download the ```.zip``` file from Github, you need to change the branch to [ND2withBioFormat](https://github.com/JacobZuo/Tracking/tree/ND2withBioFormat) before downloading manually.
 
 Enjoy.
 
@@ -77,7 +58,7 @@ You can set parameters for ```Tracking``` with the command below.
 
 ```matlab
 [Trace_All, ImageInfo] = Tracking(FileName, 'Parameter', value)
-```
+ ```
 For ```string``` type value, you shold use ```''```. Such as,
 
 ```matlab
