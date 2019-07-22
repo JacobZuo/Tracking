@@ -8,7 +8,7 @@ function [ImageInfo] = ImageFileInfo(FileName,ChannelNum,varargin)
 
     [Path, Name, Type] = fileparts(FileName);
     ImageInfo.File_id = FileName;
-    ImageInfo.Path = [Path, '\'];
+    ImageInfo.Path = [Path, filesep];
     ImageInfo.FileName = Name;
     ImageInfo.FileType = Type;
 
@@ -21,7 +21,7 @@ function [ImageInfo] = ImageFileInfo(FileName,ChannelNum,varargin)
         ImageInfo.ImageHeight = r.getSizeY();
         r.close();
         clear r
-
+        
     elseif strcmp(ImageInfo.FileType, '.tif')
 
         ImageInfo.main = imfImageInfo(ImageInfo.File_id);
@@ -30,12 +30,14 @@ function [ImageInfo] = ImageFileInfo(FileName,ChannelNum,varargin)
         ImageInfo.ImageHeight = ImageInfo.main(1).Height;
 
     else
-        disp(['Do not support ', FileType, ' file'])
+        warning(['Do not support ', FileType, ' file'])
         return
     end
 
     if ImageInfo.numImages < 20
-        disp('Warning, too short movie for tracking cell motion.')
+        warning('off','backtrace')
+        warning('Too short movie for tracking cell motion.')
+        warning('on','backtrace')
     else
     end
 

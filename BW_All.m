@@ -3,18 +3,13 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
     ActiveContourStatus = 'off';
     AutoCellSize = 'on';
     ActiveContourTimes = 5;
+    Tag=char(datetime('now','format','-HH-mm-ss'));
 
     if isempty(varargin)
     else
 
         for i = 1:(size(varargin, 2) / 2)
-
-            if ischar(varargin{i * 2})
-                eval([varargin{i * 2 - 1}, ' = ''', varargin{i * 2}, '''; ']);
-            else
-                eval([varargin{i * 2 - 1}, '=', num2str(varargin{i * 2}), ';']);
-            end
-
+            AssignVar(varargin{i * 2 - 1},varargin{i * 2})
         end
 
     end
@@ -25,7 +20,7 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
     FileName = ImageInfo.FileName;
     Path = ImageInfo.Path;
 
-    BWtifStackName = [Path, 'BW_', FileName];
+    BWtifStackName = [Path, 'BW_', FileName, Tag];
 
     if exist([BWtifStackName, '.tif'], 'file') == 2
         BWtifStackNameFull = [BWtifStackName, '_', num2str(floor(rand(1) * 10^5)), '.tif'];
@@ -42,14 +37,12 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
         r = bfGetReader(File_id, 0);
     elseif strcmp(ImageInfo.FileType, '.tif')
     else
-        disp('Error!')
+        warning('Error!')
         return
     end
 
-    CellNumDetected = [];
+    CellNumDetected = zeros(1, size(TrackImageIndex, 2));
     CellRegion_All = cell(0);
-
-    Barlength = 0;
 
     for i = 1:size(TrackImageIndex, 2)
 
@@ -58,7 +51,7 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
         elseif strcmp(ImageInfo.FileType, '.tif')
             Original_Image = imread(File_id, 'Index', TrackImageIndex(i), 'Info', ImageInfo.main);
         else
-            disp('Error!')
+            warning('Error!')
             return
         end
 
@@ -69,9 +62,10 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
         CellRegion_array = (reshape(struct2array(CellRegion), [7, size(CellRegion, 1)]))';
         % remove the cells less then 5 pixels and larger than 360 pixels
         CellRegion_array(CellRegion_array(:, 1) < 5 | CellRegion_array(:, 1) > 360, :) = [];
-        CellRegion_All{i} = CellRegion_array;
         CellNumDetected(i) = size(CellRegion_array, 1);
-        [~, Barlength] = DisplayBar(i, size(TrackImageIndex, 2), Barlength);
+        CellRegion_array(:, 8)=(sum(CellNumDetected(1:i-1))+1):sum(CellNumDetected(1:i));
+        CellRegion_All{i} = CellRegion_array;
+        DisplayBar(i, size(TrackImageIndex, 2));
     end
 
     if strcmp(ImageInfo.FileType, '.nd2')
@@ -82,7 +76,9 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
 
     if min(CellNumDetected) < 8
         LowCellNumFrame = TrackImageIndex(CellNumDetected == min(CellNumDetected));
-        disp(['Warning, too few cells detected at frame ', num2str(LowCellNumFrame)])
+        warning('off','backtrace')
+        warning(['Too few cells detected at frame ', num2str(LowCellNumFrame)])
+        warning('on','backtrace')
 
         %     for i = 1:size(LowCellNumFrame, 2)
         %         Original_Image = bfGetPlane(r, TrackImageIndex(LowCellNumFrame(i)));
@@ -96,7 +92,9 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
 
     if max(CellNumDetected) > 300
         ManyCellNumFrame = TrackImageIndex(CellNumDetected == min(CellNumDetected));
-        disp(['Warning, too many cells detected at frame ', num2str(ManyCellNumFrame)])
+        warning('off','backtrace')
+        warning(['Too many cells detected at frame ', num2str(ManyCellNumFrame)])
+        warning('on','backtrace')
 
         %     for i = 1:size(ManyCellNumFrame, 2)
         %         Original_Image = bfGetPlane(r, TrackImageIndex(ManyCellNumFrame(i)));

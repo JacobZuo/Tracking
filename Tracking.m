@@ -21,11 +21,8 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     % README.md.
     %
 
-    % TODO Test the .tif support.
-    % TODO SpecialCaseDetector.
-
     % Initialization the default parameter
-    disp('----------------------------------------------------------------------------------------------------')
+    disp('--------------------------------------------------------------------------------')
     disp('Initialization...')
 
     ChannelNum = 1;
@@ -40,13 +37,7 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     else
 
         for i = 1:(size(varargin, 2) / 2)
-
-            if ischar(varargin{i * 2})
-                eval([varargin{i * 2 - 1}, ' = ''', varargin{i * 2}, '''; ']);
-            else
-                eval([varargin{i * 2 - 1}, '=', num2str(varargin{i * 2}), ';']);
-            end
-
+            AssignVar(varargin{i * 2 - 1},varargin{i * 2})
         end
 
     end
@@ -62,11 +53,11 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     % Background Normalization
 
     if strcmp(Normalization, 'on')
-        disp('----------------------------------------------------------------------------------------------------')
+        disp('--------------------------------------------------------------------------------')
         disp('Background normalization...')
         Background_nor = BackgroundNormalization(ImageInfo);
     else
-        disp('----------------------------------------------------------------------------------------------------')
+        disp('--------------------------------------------------------------------------------')
         disp('Background normalization off')
         Background_nor = ones(ImageInfo.ImageHeight, ImageInfo.ImageWidth);
     end
@@ -74,7 +65,7 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     % Test for the best threshold.
 
     if strcmp(AutoThreshold, 'on')
-        disp('----------------------------------------------------------------------------------------------------')
+        disp('--------------------------------------------------------------------------------')
         disp('Auto threshold tesing')
         [BlurSize, ExtensionRatio] = ThresholdTest(ImageInfo, Background_nor);
     else
@@ -94,71 +85,56 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     disp(['The BlurSize and ExtensionRatio is set as ', num2str(BlurSize), ' and ', num2str(ExtensionRatio)])
 
     % Process Cell Size.
-    disp('----------------------------------------------------------------------------------------------------')
+    disp('--------------------------------------------------------------------------------')
     disp('Process Cell Size')
     MeanCellSize = CellSizeTest(ImageInfo, Background_nor, BlurSize, ExtensionRatio, 'AutoCellSize', AutoCellSize, 'ActiveContourStatus', ActiveContourStatus, 'ActiveContourTimes', ActiveContourTimes);
     disp(['The mean cell size is about ', num2str(MeanCellSize)])
 
     % Transform the gray images into B/W image
-    disp('----------------------------------------------------------------------------------------------------')
+    disp('--------------------------------------------------------------------------------')
     disp('B/W Image Calculating...')
     [CellRegion_All, ~] = BW_All(ImageInfo, Background_nor, BlurSize, ExtensionRatio, 'CellSizeControlStatus', AutoCellSize, 'ActiveContourStatus', 'on', 'ActiveContourTimes', ActiveContourTimes);
 
     % PartOne find the locations of cells
-    disp('----------------------------------------------------------------------------------------------------')
+    disp('--------------------------------------------------------------------------------')
     disp('Finding cells locations ...')
-    [Cell_Centroid, Cell_Size, V, C] = PositionLocator(CellRegion_All, ImageInfo);
+    [Cell_Centroid, Cell_Size, Cell_Index, V, C] = PositionLocator(CellRegion_All, ImageInfo);
 
-    disp('Finished!')
 
     % PartTwo link the cells between neighbour frames
-    disp('----------------------------------------------------------------------------------------------------')
+    disp('--------------------------------------------------------------------------------')
     disp('Tracking cells between neighbour frames')
-    [trace_result] = TrackCellBetweenFrames(Cell_Centroid, Cell_Size, V, C);
+    [trace_result] = TrackCellBetweenFrames(Cell_Centroid, Cell_Size, Cell_Index, V, C);
 
-    disp('Finished!')
 
     % PartThree connect all the traces
-    disp('----------------------------------------------------------------------------------------------------')
+    disp('--------------------------------------------------------------------------------')
     disp('Connect cells traces')
     [Trace_All] = TraceConnector(trace_result);
 
-    disp('Finished!')
-    disp('----------------------------------------------------------------------------------------------------')
+    disp('--------------------------------------------------------------------------------')
     disp('Saving data!')
     clear('i')
 
-    disp('----------------------------------------------------------------------------------------------------')
+    disp('--------------------------------------------------------------------------------')
     save([ImageInfo.Path, 'Trace ', ImageInfo.FileName, '.mat'])
 
 end
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-%    @@   @@  @@   @@   @@        @@    @@@@@                             %
-%    @@ @ @@  @@   @@   @@       @@@@   @@  @@       Wu Lab at CUHK       %
-%    @@ @ @@  @@   @@   @@      @@  @@  @@  @@     All rights reserved    %
-%    @@ @ @@  @@   @@   @@      @@  @@  @@@@@   www.phy.cuhk.edu.hk/ylwu  %
-%     @@@@@   @@   @@   @@      @@@@@@  @@  @@                            %
-%     @@ @@   @@   @@   @@   @  @@  @@  @@  @@    J. Z.: zwlong@live.com  %
-%     @@ @@    @@@@@    @@@@@@  @@  @@  @@@@@                             %
+%  __        ___   _   _        _    ____                                 %
+%  \ \      / / | | | | |      / \  | __ )          Wu Lab at CUHK        %
+%   \ \ /\ / /| | | | | |     / _ \ |  _ \         All rights reserved    %
+%    \ V  V / | |_| | | |___ / ___ \| |_) |    www.phy.cuhk.edu.hk/ylwu   %
+%     \_/\_/   \___/  |_____/_/   \_\____/       J. Z.: zwlong@live.com   %
+%                                                                         %
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-%          @@@@   @@  @@  @@  @@  @@  @@                                  %
-%         @@  @@  @@  @@  @@  @@  @@ @@              Wu Lab at CUHK       %
-%         @@      @@  @@  @@  @@  @@@@             All rights reserved    %
-%         @@      @@  @@  @@@@@@  @@@           www.phy.cuhk.edu.hk/ylwu  %
-%         @@      @@  @@  @@  @@  @@@@                                    %
-%         @@  @@  @@  @@  @@  @@  @@ @@           J. Z.: zwlong@live.com  %
-%          @@@@    @@@@   @@  @@  @@  @@                                  %
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-
-% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-%        @@@@    @@     @@@@    @@@@   @@@@@                              %
-%         @@    @@@@   @@  @@  @@  @@  @@  @@        Wu Lab at CUHK       %
-%         @@   @@  @@  @@      @@  @@  @@  @@      All rights reserved    %
-%         @@   @@  @@  @@      @@  @@  @@@@@    www.phy.cuhk.edu.hk/ylwu  %
-%         @@   @@@@@@  @@      @@  @@  @@  @@                             %
-%     @@  @@   @@  @@  @@  @@  @@  @@  @@  @@     J. Z.: zwlong@live.com  %
-%      @@@@    @@  @@   @@@@    @@@@   @@@@@                              %
+%       _      _       ____    ___    ____                                %
+%      | |    / \     / ___|  / _ \  | __ )         Wu Lab at CUHK        %
+%   _  | |   / _ \   | |     | | | | |  _ \       All rights reserved     %
+%  | |_| |  / ___ \  | |___  | |_| | | |_) |  https://jacobzuo.github.io  %
+%   \___/  /_/   \_\  \____|  \___/  |____/      J. Z.: zwlong@live.com   %
+%                                                                         %
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %

@@ -13,7 +13,7 @@ function [TraceMovie] = TracePlayer(ImageInfo, Background_nor, Trace)
         r = bfGetReader(File_id, 0);
     elseif strcmp(ImageInfo.FileType, '.tif')
     else
-        disp('Error!')
+        warning('Error!')
         return
     end
 
@@ -27,7 +27,7 @@ function [TraceMovie] = TracePlayer(ImageInfo, Background_nor, Trace)
         elseif strcmp(ImageInfo.FileType, '.tif')
             Original_Image = imread(File_id, 'Index', TrackImageIndex(Trace(i, 1)), 'Info', ImageInfo.main);
         else
-            disp('Error!')
+            warning('Error!')
             return
         end
 
@@ -37,6 +37,12 @@ function [TraceMovie] = TracePlayer(ImageInfo, Background_nor, Trace)
         TraceImagei(TraceMask) = 1;
         TraceMovie(:, :, i) = TraceImagei;
 
+    end
+
+    if strcmp(ImageInfo.FileType,'.nd2')
+        r.close();
+        clear r
+    else
     end
 
     implay(TraceMovie)

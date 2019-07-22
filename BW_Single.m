@@ -8,13 +8,7 @@ function [BW_Image] = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, varar
     else
 
         for i = 1:(size(varargin, 2) / 2)
-
-            if ischar(varargin{i * 2})
-                eval([varargin{i * 2 - 1}, ' = ''', varargin{i * 2}, '''; ']);
-            else
-                eval([varargin{i * 2 - 1}, '=', num2str(varargin{i * 2}), ';']);
-            end
-
+            AssignVar(varargin{i * 2 - 1},varargin{i * 2})
         end
 
     end
@@ -36,7 +30,7 @@ function [BW_Image] = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, varar
 
     if gof.adjrsquare > 0.98
     else
-        disp('Warning, fitting background hist with RSquare < 0.98.')
+        assignin('caller', 'Warning', 1)
     end
 
     BW_Image = (Iblur > fitresult.b1 + ExtensionRatio * fitresult.c1);
