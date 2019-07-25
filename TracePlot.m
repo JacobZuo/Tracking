@@ -2,7 +2,7 @@ function [] = TracePlot(Trace_All)
 
     figure()
     hold on
-    axis([0 2048 0 2048])
+%     axis([0 2048 0 2048])
     axis equal
     box on
     set(gca, 'FontSize', 16, 'LineWidth', 1.5)
