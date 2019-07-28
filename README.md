@@ -77,7 +77,7 @@ You can set parameters for ```Tracking``` with the command below.
 
 ```matlab
 [Trace_All, ImageInfo] = Tracking(FileName, 'Parameter', value)
-```
+ ```
 For ```string``` type value, you shold use ```''```. Such as,
 
 ```matlab
@@ -220,6 +220,6 @@ Using ```MinLength``` will keep the trajectories longer than the ```MinLength```
 This function provides a small tool to show the single trace in Matlab ```implayer```.
 
 ```matlab
-[TraceMovie] = TracePlayer(ImageInfo, Background_nor, Trace)
+[TraceMovie] = TracePlayer(ImageInfo, Trace)
 ```
-You need to load the ```.mat``` file saved with ```Tracking``` function and running the above command to play the trajectory ```Trace```. There will be a white dot on the cell body that indicated the cell in the ```Trace```.
+You need to load the ```.mat``` file saved with ```Tracking``` function and running the above command to play the trajectory ```Trace```. There will be a white box on the cell body that indicated the cell in the ```Trace```.
