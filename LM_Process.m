@@ -66,7 +66,7 @@ function [CellRegion_All, CellNumDetected] = LM_Process(ImageInfo, varargin)
 
         if i == 1
             figure
-            imshow(Original_Image)
+            imshow(mat2gray(Original_Image))
             hold on
             plot(CellRegion_array(:, 2), CellRegion_array(:, 3), 'o', 'MarkerSize', 12, 'LineWidth', 2)
             hold off
