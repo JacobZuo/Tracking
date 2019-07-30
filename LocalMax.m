@@ -24,12 +24,11 @@ function [BW_Image, CellRegion_array] = LocalMax(OriImage, varargin)
 
     if strcmp(Tolerance, 'auto')
         [OdrIntensity, ~] = sort(OriImage(:));
-        Tolerance = OdrIntensity(floor(size(OdrIntensity, 1) * 19/20)) - median(OdrIntensity(1:floor(size(OdrIntensity, 1) * 3/10)));
+        Tolerance = OdrIntensity(floor(size(OdrIntensity, 1) * 97.5/100)) - median(OdrIntensity(1:floor(size(OdrIntensity, 1) * 50/100)));
     else
     end
 
     OriImageLocalMax = imdilate(OriImage, LocalMask);
-    
     
     LocalMaxIndex = find(OriImageLocalMax==OriImage);
     LocalMaxMatrix = LocalMaxIndex+(ImageMaskIndex-Index)';
