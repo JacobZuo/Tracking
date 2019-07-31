@@ -178,7 +178,20 @@ Function ```activecontour``` can work independent of ```CellSizeControl```.
 [Trace_All, ImageInfo] = Tracking(FileName, 'AutoCellSize', 'off', 'ActiveContourStatus', 'on', ...
      'ActiveContourTimes', 10)
 ```
+#### 2.3.5 Tracking with local maximal
 
+You can find the object without the local maximal method.
+
+```matlab
+Tracking(FileName,'Method','LocalMaximal')
+```
+
+Default, the ```LocalMax``` function will generate the local maximal pixel in range of 6 pixels. The local maxima will be filtered with auto tolerance. With the auto tolerance, only the pixel which is significantly brighter than the other pixels around it would be regarded as the object. You can also set the ```Range``` and ```Tolerance``` manually.
+
+```matlab
+Tracking(FileName,'Method','LocalMaximal', 'Range', 9, 'Tolerance', 200)
+```
+The value of ```Tolerance``` should be the intensity difference between the local maximal pixel and the median of pixels around it.
 
 ## 3. Appended functions
 
