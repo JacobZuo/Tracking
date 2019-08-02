@@ -236,3 +236,5 @@ This function provides a small tool to show the single trace in Matlab ```implay
 [TraceMovie] = TracePlayer(ImageInfo, Trace)
 ```
 You need to load the ```.mat``` file saved with ```Tracking``` function and running the above command to play the trajectory ```Trace```. There will be a white box on the cell body that indicated the cell in the ```Trace```.
+
+![](Resource/TracePlayer.gif)
