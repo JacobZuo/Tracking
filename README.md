@@ -193,6 +193,8 @@ Tracking(FileName,'Method','LocalMaximal', 'Range', 9, 'Tolerance', 200)
 ```
 The value of ```Tolerance``` should be the intensity difference between the local maximal pixel and the median of pixels around it.
 
+**Warning! do not use local maximal method for rod like particle such as bacteria. The local maximal pixel may not locate at the center of the rod shaped particle.**
+
 ## 3. Appended functions
 
 ### 3.1 Process bar
