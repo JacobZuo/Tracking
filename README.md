@@ -51,7 +51,7 @@ Enjoy.
 You can use the following command to track the particle/cell motion in the file of ```FileName```. ```FileName``` should contain the full path and extension name, such as ```'D:\Data\Test.tif'```.
 
 ```matlab
-[Trace_All, ImageInfo] = Tracking(FileName)
+[Trace_All, ImageInfo] = Tracking(FileName);
 ```
 The funtion will return two result as a cell data ```Trace_All``` and a structure data ```ImageInfo```. 
 
@@ -64,7 +64,7 @@ Running the function will also save two data files under the same path of the mo
 You can also do tracking with a B/W image with
 
 ```matlab
-[Trace_All, ImageInfo] = TrackingBW(BWImage)
+[Trace_All, ImageInfo] = TrackingBW(BWImage);
 ```
 
 ```BWImage``` can be a matrix of binary images in Matlab workspace or a filename with full path of the binary images data in ```.mat``` file or an binary ```.tif``` stack.
@@ -76,12 +76,12 @@ You can also do tracking with a B/W image with
 You can set parameters for ```Tracking``` with the command below.
 
 ```matlab
-[Trace_All, ImageInfo] = Tracking(FileName, 'Parameter', value)
+[Trace_All, ImageInfo] = Tracking(FileName, 'Parameter', value);
  ```
 For ```string``` type value, you shold use ```''```. Such as,
 
 ```matlab
-[Trace_All, ImageInfo] = Tracking(FileName, 'AutoThreshold', 'on')
+[Trace_All, ImageInfo] = Tracking(FileName, 'AutoThreshold', 'on');
 ```
 
 #### 2.2.2 Split channels
@@ -91,13 +91,13 @@ If your movie stack is a multi-channel series of loops as 'fluorescent image - b
 The command below will split the stack into 2 channels by auto-detect the fluorescent image as the image 'darker' than the other one.
 
 ```matlab
-[Trace_All, ImageInfo] = Tracking(FileName, 'ChannelNum', 2)
+[Trace_All, ImageInfo] = Tracking(FileName, 'ChannelNum', 2);
 ```
 
 You can also specify the channel you want to track with ```TrackChannel```.
 
 ```matlab
-[Trace_All, ImageInfo] = Tracking(FileName,'ChannelNum', 3, 'TrackChannel', 2)
+[Trace_All, ImageInfo] = Tracking(FileName,'ChannelNum', 3, 'TrackChannel', 2);
 ```
 The above command will split the stack into 3 channels and do particle/cell tracking at 2nd channel, i.e., with No. 2, 5, 8... images.
 
@@ -108,7 +108,7 @@ The ```ChannelNum``` is set to ```ChannelNum = 1``` as default.
 Fluorescent images acquired with wild-field fluorescent microscope may show brighter center and darker corners. We automatically normalization the image with a Gaussian peak fitting for background. Set ```Normalization``` ```'off'``` will stop auto normalization.
 
 ```matlab
-[Trace_All, ImageInfo] = Tracking(FileName, 'Normalization', 'off')
+[Trace_All, ImageInfo] = Tracking(FileName, 'Normalization', 'off');
 ```
 
 Stucked particles/cells in the movie may cause a wrong detection of background and lead to a 'warning' of badly background fitting.
@@ -119,7 +119,7 @@ The program would automatically detect the threshold for the movie to transfer t
 
 ```matlab
 [Trace_All, ImageInfo] = Tracking(FileName, 'AutoThreshold', 'off', 'BlurSize', 1.5，...
-     'ExtensionRatio', 2)
+     'ExtensionRatio', 2);
 ```
 Firstly, the image will be blurred with Gaussian filter to remove the obvious noise on the background. Then the threshold is set as ```mean intensity of the background``` ```+``` ```standard deviation of the background noise``` ```*``` ```ratio```. At last the B/W image are revised with ```activecontour```. ```BlurSize``` will set the radius for gauss blurring. ```ExtensionRatio``` set the ratio in the threshold.
 
@@ -142,7 +142,7 @@ The mean cell size would be around ```CellSize_default``` after appling ```CellS
 If you would like to turn off auto cell size adjustment. You can use the following command.
 
 ```matlab
-[Trace_All, ImageInfo] = Tracking(FileName, 'AutoCellSzie', 'off')
+[Trace_All, ImageInfo] = Tracking(FileName, 'AutoCellSzie', 'off');
 ```
 
 #### 2.3.2 Noise level
@@ -169,27 +169,27 @@ Reading the image into Matlab is the most slowly process in the full function. T
 Now the program use ```imerode``` and ```imdilate``` to adjust cell size to achieve better efficiency. You can also use ```activecontour``` to acquire better B/W image. 
 
 ```matlab
-[Trace_All, ImageInfo] = Tracking(FileName, 'ActiveContourStatus', 'on', 'ActiveContourTimes', 10)
+[Trace_All, ImageInfo] = Tracking(FileName, 'ActiveContourStatus', 'on', 'ActiveContourTimes', 10);
 ```
 
 Function ```activecontour``` can work independent of ```CellSizeControl```.
 
 ```matlab
 [Trace_All, ImageInfo] = Tracking(FileName, 'AutoCellSize', 'off', 'ActiveContourStatus', 'on', ...
-     'ActiveContourTimes', 10)
+     'ActiveContourTimes', 10);
 ```
 #### 2.3.5 Tracking with local maximal
 
 You can find the object without the local maximal method.
 
 ```matlab
-Tracking(FileName,'Method','LocalMaximal')
+Tracking(FileName,'Method','LocalMaximal');
 ```
 
 Default, the ```LocalMax``` function will generate the local maximal pixel in range of 6 pixels. The local maxima will be filtered with auto tolerance. With the auto tolerance, only the pixel which is significantly brighter than the other pixels around it would be regarded as the object. You can also set the ```Range``` and ```Tolerance``` manually.
 
 ```matlab
-Tracking(FileName,'Method','LocalMaximal', 'Range', 9, 'Tolerance', 200)
+Tracking(FileName,'Method','LocalMaximal', 'Range', 9, 'Tolerance', 200);
 ```
 The value of ```Tolerance``` should be the intensity difference between the local maximal pixel and the median of pixels around it.
 
@@ -219,13 +219,13 @@ The bar would be shown in the command windows as below.
 The trimmer function provides a tool to trim the trajectories.
 
 ```matlab
-[Trace_Trimmed] = TraceTrimmer(Trace_All)
+[Trace_Trimmed] = TraceTrimmer(Trace_All);
 ```
 
 If the cell size in one trajectory changed more than 80%, i.e. smaller than 20% of the mean size or larger than 180% of the mean size, we will cut the trajectory based on cell size. 
 
 ```matlab
-[Trace_Trimmed] = TraceTrimmer(Trace_All, MinLength)
+[Trace_Trimmed] = TraceTrimmer(Trace_All, MinLength);
 ```
 
 Using ```MinLength``` will keep the trajectories longer than the ```MinLength```. Set ```MinLength = 0``` will keep all trajectories.
@@ -235,7 +235,7 @@ Using ```MinLength``` will keep the trajectories longer than the ```MinLength```
 This function provides a small tool to show the single trace in Matlab ```implayer```.
 
 ```matlab
-[TraceMovie] = TracePlayer(ImageInfo, Trace)
+[TraceMovie] = TracePlayer(ImageInfo, Trace);
 ```
 You need to load the ```.mat``` file saved with ```Tracking``` function and running the above command to play the trajectory ```Trace```. There will be a white box on the cell body that indicated the cell in the ```Trace```.
 
