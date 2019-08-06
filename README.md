@@ -180,7 +180,7 @@ Function ```activecontour``` can work independent of ```CellSizeControl```.
 ```
 #### 2.3.5 Tracking with local maximal
 
-You can find the object without the local maximal method.
+You can find the object with the local maximal method.
 
 ```matlab
 Tracking(FileName,'Method','LocalMaximal');
@@ -193,7 +193,7 @@ Tracking(FileName,'Method','LocalMaximal', 'Range', 9, 'Tolerance', 200);
 ```
 The value of ```Tolerance``` should be the intensity difference between the local maximal pixel and the median of pixels around it.
 
-**Warning! do not use local maximal method for rod like particle such as bacteria. The local maximal pixel may not locate at the center of the rod shaped particle.**
+**Warning! do not use local maximal method for rod shaped particle such as bacteria. The local maximal pixel may not locate at the center of the rod shaped particle.**
 
 ## 3. Appended functions
 
