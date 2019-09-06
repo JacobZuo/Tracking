@@ -1,4 +1,17 @@
-function [BlurSize, ExtensionRatio] = ThresholdTest(ImageInfo, Background_nor)
+function [BlurSize, ExtensionRatio] = ThresholdTest(ImageInfo, Background_nor, varargin)
+
+
+    Method = 'Fluorescent';
+    
+    if isempty(varargin)
+    else
+
+        for i = 1:(size(varargin, 2) / 2)
+            AssignVar(varargin{i * 2 - 1}, varargin{i * 2})
+        end
+
+    end
+
 
     File_id = ImageInfo.File_id;
     TrackChannel = ImageInfo.TrackChannel;
@@ -9,8 +22,14 @@ function [BlurSize, ExtensionRatio] = ThresholdTest(ImageInfo, Background_nor)
         Original_Image = imread(File_id, 'Index', TrackChannel, 'Info', ImageInfo.main);
     end
 
-    Normalize_Image = uint16(double(Original_Image(:, :)) ./ Background_nor);
-
+    
+    if strcmp(Method, 'Fluorescent')
+        Normalize_Image = mat2gray(double(Original_Image(:, :)) ./ Background_nor);
+    elseif strcmp(Method, 'PhaseContrast')
+        Normalize_Image = 1-mat2gray(double(Original_Image(:, :)) - Background_nor);
+    end
+    
+    
     BlurSize_test = 0.5:0.5:3;
     ExtensionRatio_test = 1:1:8;
 
@@ -46,7 +65,7 @@ function [BlurSize, ExtensionRatio] = ThresholdTest(ImageInfo, Background_nor)
     else
     end
     
-    [BlurSize_better_Index, ExtensionRatio_better_Index] = find(CellNumDetected == max(CellNumDetected(NoiseNum < 3)));
+    [BlurSize_better_Index, ExtensionRatio_better_Index] = find(CellNumDetected == max(CellNumDetected(NoiseNum <= max(min(NoiseNum(:)), 3))));
 
     BlurSize_test_fine = (mean(BlurSize_test(BlurSize_better_Index)) - 0.2):0.1:(mean(BlurSize_test(BlurSize_better_Index)) + 0.2);
     ExtensionRatio_test_fine = (mean(ExtensionRatio_test(ExtensionRatio_better_Index)) - 0.4):0.2:(mean(ExtensionRatio_test(ExtensionRatio_better_Index)) + 0.4);
@@ -83,7 +102,7 @@ function [BlurSize, ExtensionRatio] = ThresholdTest(ImageInfo, Background_nor)
     else
     end
 
-    [BlurSize_best_Index, ExtensionRatio_best_Index] = find(CellNumDetected == max(CellNumDetected(NoiseNum < 3)));
+    [BlurSize_best_Index, ExtensionRatio_best_Index] = find(CellNumDetected == max(CellNumDetected(NoiseNum < max(min(NoiseNum(:)), 3))));
 
     BlurSize = mean(BlurSize_test_fine(BlurSize_best_Index));
     ExtensionRatio = mean(ExtensionRatio_test_fine(ExtensionRatio_best_Index));

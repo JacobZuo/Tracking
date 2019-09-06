@@ -28,10 +28,10 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
     ChannelNum = 1;
     Normalization = 'on';
     AutoThreshold = 'on';
-    AutoCellSize = 'on';
+    AutoCellSize = 120;
     ActiveContourStatus = 'off';
     ActiveContourTimes = 5;
-    Method = 'Threshold';
+    Method = 'Fluorescent';
     %     Method = 'LocalMaximal';
     Range = 6;
     Tolerance = 'auto';
@@ -57,24 +57,30 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
 
     % Background Normalization
 
-    if strcmp(Method, 'Threshold')
+    if strcmp(Method, 'Fluorescent') || strcmp(Method, 'PhaseContrast')
 
         if strcmp(Normalization, 'on')
             disp('--------------------------------------------------------------------------------')
             disp('Background normalization...')
-            Background_nor = BackgroundNormalization(ImageInfo);
+            Background_nor = BackgroundNormalization(ImageInfo, 'Method', Method);
         else
             disp('--------------------------------------------------------------------------------')
             disp('Background normalization off')
-            Background_nor = ones(ImageInfo.ImageHeight, ImageInfo.ImageWidth);
-        end
+            
+            if strcmp(Method, 'Fluorescent')
+                Background_nor = ones(ImageInfo.ImageHeight, ImageInfo.ImageWidth);
+            elseif strcmp(Method, 'PhaseContrast')
+                Background_nor = zeros(ImageInfo.ImageHeight, ImageInfo.ImageWidth);
+            end
 
+        end
+        
         % Test for the best threshold.
 
         if strcmp(AutoThreshold, 'on')
             disp('--------------------------------------------------------------------------------')
             disp('Auto threshold tesing')
-            [BlurSize, ExtensionRatio] = ThresholdTest(ImageInfo, Background_nor);
+            [BlurSize, ExtensionRatio] = ThresholdTest(ImageInfo, Background_nor,'Method',Method);
         else
 
             if exist('BlurSize', 'var')
@@ -94,14 +100,14 @@ function [Trace_All, ImageInfo] = Tracking(FileName, varargin)
         % Process Cell Size.
         disp('--------------------------------------------------------------------------------')
         disp('Process Cell Size')
-        MeanCellSize = CellSizeTest(ImageInfo, Background_nor, BlurSize, ExtensionRatio, 'AutoCellSize', AutoCellSize, 'ActiveContourStatus', ActiveContourStatus, 'ActiveContourTimes', ActiveContourTimes);
+        MeanCellSize = CellSizeTest(ImageInfo, Background_nor, BlurSize, ExtensionRatio, 'AutoCellSize', AutoCellSize, 'ActiveContourStatus', ActiveContourStatus, 'ActiveContourTimes', ActiveContourTimes, 'Method', Method);
         disp(['The mean cell size is about ', num2str(MeanCellSize)])
 
         % Transform the gray images into B/W image
         disp('--------------------------------------------------------------------------------')
         disp('B/W Image Calculating...')
-        [CellRegion_All, ~] = BW_All(ImageInfo, Background_nor, BlurSize, ExtensionRatio, 'CellSizeControlStatus', AutoCellSize, 'ActiveContourStatus', 'on', 'ActiveContourTimes', ActiveContourTimes);
-
+        [CellRegion_All, ~] = BW_All(ImageInfo, Background_nor, BlurSize, ExtensionRatio, 'CellSizeControlStatus', AutoCellSize, 'ActiveContourStatus', 'on', 'ActiveContourTimes', ActiveContourTimes, 'Method', Method);        
+        
     elseif strcmp(Method, 'LocalMaximal')
 
         % Transform the gray images into B/W image
