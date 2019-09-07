@@ -1,4 +1,16 @@
-function [Background_nor] = BackgroundNormalization(ImageInfo)
+function [Background_nor] = BackgroundNormalization(ImageInfo, varargin)
+
+    Method = 'Fluorescent';
+    
+    if isempty(varargin)
+    else
+
+        for i = 1:(size(varargin, 2) / 2)
+            AssignVar(varargin{i * 2 - 1}, varargin{i * 2})
+        end
+
+    end
+
 
     TrackImageIndex = ImageInfo.TrackImageIndex;
     File_id = ImageInfo.File_id;
@@ -25,6 +37,9 @@ function [Background_nor] = BackgroundNormalization(ImageInfo)
         return
     end
 
+    
+    if strcmp(Method, 'Fluorescent')
+        
     BG_mean = mean(double(Background), 3);
     BG_resize = imresize(BG_mean, 1 / ReSizeRatio, 'nearest');
     AdaptBG = adaptthresh(mat2gray(BG_resize,[0 max(BG_resize(:))]),0.5,'ForegroundPolarity','bright');
@@ -54,4 +69,9 @@ function [Background_nor] = BackgroundNormalization(ImageInfo)
 
     Background_nor = fitBG(X_BG, Y_BG) ./ (max(max(fitBG(X, Y))));
 
+    elseif strcmp(Method, 'PhaseContrast')
+    Background_nor =  median(double(Background), 3);
+    end
+
+    
 end

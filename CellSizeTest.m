@@ -1,7 +1,7 @@
 function [MeanCellSize] = CellSizeTest(ImageInfo, Background_nor, BlurSize, ExtensionRatio, varargin)
 
     ActiveContourStatus = 'off';
-    AutoCellSize = 'on';
+    AutoCellSize = 120;
     ActiveContourTimes = 5;
 
     if isempty(varargin)
@@ -20,7 +20,12 @@ function [MeanCellSize] = CellSizeTest(ImageInfo, Background_nor, BlurSize, Exte
         Original_Image = imread(File_id, 'Index', TrackChannel, 'Info', ImageInfo.main);
     end
 
-    Normalize_Image = uint16(double(Original_Image(:, :)) ./ Background_nor);
+    if strcmp(Method, 'Fluorescent')
+        Normalize_Image = mat2gray(double(Original_Image(:, :)) ./ Background_nor);
+    elseif strcmp(Method, 'PhaseContrast')
+        Normalize_Image = 1-mat2gray(double(Original_Image(:, :)) - Background_nor);
+    end
+    
     [BW_Image] = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, 'AutoCellSize', AutoCellSize, 'ActiveContourStatus', ActiveContourStatus, 'ActiveContourTimes', ActiveContourTimes);
 
     CellRegion = regionprops(BW_Image);
