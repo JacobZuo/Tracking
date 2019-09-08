@@ -4,7 +4,7 @@
 
 ## 0. Overview
 
-This repo contains the source codes for tracking particles motion with Matlab. For now, we can only do tracking with fluorescent OR dark filed movies (i.e., the objects should be brighter than the background).
+This repo contains the source codes for tracking particles motion with Matlab. The program can process tracking with fluorescent OR dark filed movies (i.e., the objects should be brighter than the background) AND also phase contrast movies (i.e., the objects shoule be darker than the background).
 
 The function can work with Matlab 2018a and should be OK with previous Matlab version (early to 2014a) too. In early Matlab, function ```imwrite``` may cause problems when saving an image into ```'.tif'``` stack with Windows OS.
 
@@ -178,7 +178,16 @@ Function ```activecontour``` can work independent of ```CellSizeControl```.
 [Trace_All, ImageInfo] = Tracking(FileName, 'AutoCellSize', 'off', 'ActiveContourStatus', 'on', ...
      'ActiveContourTimes', 10);
 ```
-#### 2.3.5 Tracking with local maximal
+#### 2.3.5 Tracking phase contrast movie
+
+You can set ```'Method','PhaseContrast'``` to track the cells in phase contrast movies.
+
+```matlab
+Tracking(FileName,'Method','PhaseContrast');
+```
+You can also adjust the threshold parameters manually.`
+
+#### 2.3.6 Tracking with local maximal
 
 You can find the object with the local maximal method.
 

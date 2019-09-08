@@ -1,7 +1,7 @@
 function [BW_Image] = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, varargin)
 
     ActiveContourStatus = 'off';
-    AutoCellSize = 'on';
+    AutoCellSize = 120;
     ActiveContourTimes = 5;
 
     if isempty(varargin)
@@ -19,7 +19,7 @@ function [BW_Image] = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, varar
         Iblur = imgaussfilt(Normalize_Image, BlurSize);
     end
 
-    [A, B] = hist(Normalize_Image(:), 0:8:2048);
+    [A, B] = hist(Normalize_Image(:), 0:1/255:1);
     [xData, yData] = prepareCurveData(B, A);
     ft = fittype('gauss1');
     opts = fitoptions('Method', 'NonlinearLeastSquares');
@@ -34,10 +34,10 @@ function [BW_Image] = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, varar
     end
 
     BW_Image = (Iblur > fitresult.b1 + ExtensionRatio * fitresult.c1);
-
-    if strcmp(AutoCellSize, 'on')
-        [BW_Image, ~] = CellSizeControl(BW_Image);
+    
+    if strcmp(AutoCellSize, 'off')
     else
+        [BW_Image, ~] = CellSizeControl(BW_Image, AutoCellSize);
     end
 
     if strcmp(ActiveContourStatus, 'on')

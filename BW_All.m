@@ -1,7 +1,7 @@
 function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, BlurSize, ExtensionRatio, varargin)
 
     ActiveContourStatus = 'off';
-    AutoCellSize = 'on';
+    AutoCellSize = 120;
     ActiveContourTimes = 5;
     Tag=char(datetime('now','format','-HH-mm-ss'));
 
@@ -54,8 +54,13 @@ function [CellRegion_All, CellNumDetected] = BW_All(ImageInfo, Background_nor, B
             warning('Error!')
             return
         end
-
-        Normalize_Image = uint16(double(Original_Image(:, :)) ./ Background_nor);
+        
+        if strcmp(Method, 'Fluorescent')
+            Normalize_Image = mat2gray(double(Original_Image(:, :)) ./ Background_nor);
+        elseif strcmp(Method, 'PhaseContrast')
+            Normalize_Image = 1-mat2gray(double(Original_Image(:, :)) - Background_nor);
+        end
+        
         BW_Image = BW_Single(Normalize_Image, BlurSize, ExtensionRatio, 'AutoCellSize', AutoCellSize, 'ActiveContourStatus', ActiveContourStatus, 'ActiveContourTimes', ActiveContourTimes);
         imwrite(BW_Image, BWtifStackNameFull, 'WriteMode', 'append', 'Compression', 'none');
         CellRegion = regionprops(BW_Image);
