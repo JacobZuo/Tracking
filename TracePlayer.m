@@ -29,7 +29,7 @@ function [TraceMovie] = TracePlayer(Trace, ImageInfo, varargin)
     for i = 1:size(Trace, 1)
 
         if strcmp(ImageInfo.FileType, '.nd2')
-            Original_Image = ND2Read(FilePointer, ImagePointer, ImageReadOut, i);
+            Original_Image = ND2Read(FilePointer, ImagePointer, ImageReadOut, Trace(i, 1));
         elseif strcmp(ImageInfo.FileType, '.tif')
             Original_Image = imread(File_id, 'Index', TrackImageIndex(Trace(i, 1)), 'Info', ImageInfo.main);
         else
