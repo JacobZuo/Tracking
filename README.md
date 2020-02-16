@@ -1,8 +1,8 @@
 # Paticle/Cell tracking (Matlab)
 
-![BSD- License](https://img.shields.io/pypi/l/Django.svg)
+![BSD- License](https://img.shields.io/pypi/l/Django.svg) [![View Tracking on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/74273-tracking)
 
-## 0. Overview
+## Overview
 
 This repo contains the source codes for tracking particles motion with Matlab. The program can process tracking with fluorescent OR dark filed movies (i.e., the objects should be brighter than the background) AND also phase contrast movies (i.e., the objects shoule be darker than the background).
 
@@ -12,7 +12,11 @@ Both '.tif' stack and '.nd2' NIS-Elements files are supported. If your movie (or
 
 The movie should be in grayscale (uint16 or unit8). For '.nd2' file, the movie file should be in one series. Now the script use [nd2reader](https://github.com/JacobZuo/nd2reader) to load '.nd2' file into Matlab. It also provied a Linux version at [nd2reader-linux](https://github.com/JacobZuo/nd2reader-linux). If you are familar with with [Bio-Format](https://www.openmicroscopy.org/bio-formats/), you can change this repo to 'ND2withBioFormat' channel to do tracking with [Bio-Format](https://www.openmicroscopy.org/bio-formats/).
 
-## 1. Installation
+## Cite As
+
+1. Zuo, Wenlong. & Wu, Yilin. (2020). Dynamic motility selection drives population segregation in a bacterial swarm. Proc. Natl. Acad. Sci. 201917789.
+
+## Installation
 
 For users working with ```git on Windows```, you can fork/clone the repo with.
 
@@ -44,9 +48,9 @@ sudo cp -rf nd2reader/ Tracking/
 
 Enjoy.
 
-## 2. Usage
+## Usage
 
-### 2.1 Basic usage
+### Basic usage
 
 You can use the following command to track the particle/cell motion in the file of ```FileName```. ```FileName``` should contain the full path and extension name, such as ```'D:\Data\Test.tif'```.
 
@@ -69,9 +73,9 @@ You can also do tracking with a B/W image with
 
 ```BWImage``` can be a matrix of binary images in Matlab workspace or a filename with full path of the binary images data in ```.mat``` file or an binary ```.tif``` stack.
 
-### 2.2 Parameter options
+### Parameter options
 
-#### 2.2.1 Setting parameters
+#### Setting parameters
 
 You can set parameters for ```Tracking``` with the command below.
 
@@ -84,7 +88,7 @@ For ```string``` type value, you shold use ```''```. Such as,
 [Trace_All, ImageInfo] = Tracking(FileName, 'AutoThreshold', 'on');
 ```
 
-#### 2.2.2 Split channels
+#### Split channels
 
 If your movie stack is a multi-channel series of loops as 'fluorescent image - bright filed image', you can use parameters ```ChannelNum``` and ```TrackChannel``` to split the stack.
 
@@ -103,7 +107,7 @@ The above command will split the stack into 3 channels and do particle/cell trac
 
 The ```ChannelNum``` is set to ```ChannelNum = 1``` as default.
 
-#### 2.2.3. Background normalization
+#### Background normalization
 
 Fluorescent images acquired with wild-field fluorescent microscope may show brighter center and darker corners. We automatically normalization the image with a Gaussian peak fitting for background. Set ```Normalization``` ```'off'``` will stop auto normalization.
 
@@ -113,7 +117,7 @@ Fluorescent images acquired with wild-field fluorescent microscope may show brig
 
 Stucked particles/cells in the movie may cause a wrong detection of background and lead to a 'warning' of badly background fitting.
 
-#### 2.2.4 Threshold auto-adjust
+#### Threshold auto-adjust
 
 The program would automatically detect the threshold for the movie to transfer the grayscale image into B/W image for cell detection. You can also set the threshold your self.
 
@@ -128,9 +132,9 @@ When set ```'AutoThreshold'``` ```'off'``` without specify the parameter value. 
 BlurSize = 1.5; ExtensionRatio = 2;
 ```
 
-### 2.3 Advanced usage
+### Advanced usage
 
-#### 2.3.1 Particle/cell size control
+#### Particle/cell size control
 
 To control the quality of the binary image, the default particle/cell size (area in binary image) is set as 120 pixels in function ```CellSizeControl```.
 
@@ -145,7 +149,7 @@ If you would like to turn off auto cell size adjustment. You can use the followi
 [Trace_All, ImageInfo] = Tracking(FileName, 'AutoCellSzie', 'off');
 ```
 
-#### 2.3.2 Noise level
+#### Noise level
 
 The area smaller than 5 pixels would be taken as 'noise' on background during the threshold test. 
 
@@ -156,13 +160,13 @@ When adjustiing threshold, we try to balance the cell number detected and noise 
 
 The residual noise pixels will be abandoned in cell size control.
 
-#### 2.3.3 Particle/cell density
+#### Particle/cell density
 
 For better tracking result, the detected particle/cell density should be around 100 to 200 per frame. If there are too few cells, a missing or a new comming cell may cause wrong connections between frames. If there are too many cells, the collision between cells may also cause wrong connections.
 
 There will be a warning if there are too few or too many cells detected in some of the frames. Try to check and adjust the threshold to obtain a better tracking result.
 
-#### 2.3.4 Efficiency
+#### Efficiency
 
 Reading the image into Matlab is the most slowly process in the full function. The images are loaded and processed one by one in Matlab, as for some of the cases, it is hard to load all the data (in tens of GB, out of RAM) into Matlab at once. If you RAM is large enough, you can change the image loading part in ```BW_All``` could obtain better efficiency. Using a ```parfor``` to load and process the image will be faster.
 
@@ -178,7 +182,7 @@ Function ```activecontour``` can work independent of ```CellSizeControl```.
 [Trace_All, ImageInfo] = Tracking(FileName, 'AutoCellSize', 'off', 'ActiveContourStatus', 'on', ...
      'ActiveContourTimes', 10);
 ```
-#### 2.3.5 Tracking phase contrast movie
+#### Tracking phase contrast movie
 
 You can set ```'Method','PhaseContrast'``` to track the cells in phase contrast movies.
 
@@ -187,7 +191,7 @@ Tracking(FileName,'Method','PhaseContrast');
 ```
 You can also adjust the threshold parameters manually.`
 
-#### 2.3.6 Tracking with local maximal
+#### Tracking with local maximal
 
 You can find the object with the local maximal method.
 
@@ -204,9 +208,9 @@ The value of ```Tolerance``` should be the intensity difference between the loca
 
 **Warning! do not use local maximal method for rod shaped particle such as bacteria. The local maximal pixel may not locate at the center of the rod shaped particle.**
 
-## 3. Appended functions
+## Appended functions
 
-### 3.1 Process bar
+### Process bar
 
 There is a processing bar in ```[##>---]``` style displayed in Matlab command window when running ```for``` loops during tracking.
 
@@ -223,7 +227,7 @@ The bar would be shown in the command windows as below.
 ![](Resource/DisplayBar.gif)
 
 
-### 3.2 Trace trimmer
+### Trace trimmer
 
 The trimmer function provides a tool to trim the trajectories.
 
@@ -239,7 +243,7 @@ If the cell size in one trajectory changed more than 80%, i.e. smaller than 20% 
 
 Using ```MinLength``` will keep the trajectories longer than the ```MinLength```. Set ```MinLength = 0``` will keep all trajectories.
 
-### 3.3 Trace player
+### Trace player
 
 This function provides a small tool to show the single trace in Matlab ```implayer```.
 
